@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Môi Trường Số Học Tập</title>
+  <style>
+    :root{
+      --accent:#0072ff; --accent-2:#00c6ff; --muted:#6b7280;
+      --bg:#f9fafb; --card:#fff;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:#1f2937}
+    /* Header */
+    header{background:var(--card);display:flex;align-items:center;justify-content:space-between;padding:12px 28px;border-bottom:1px solid #e6eef8;position:sticky;top:0;z-index:30}
+    .brand{display:flex;align-items:center;gap:12px}
+    .brand .logo{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;background:linear-gradient(135deg,var(--accent-2),var(--accent))}
+    .brand .title{line-height:1}
+    .brand .title h1{margin:0;font-size:17px}
+    .brand .title p{margin:0;font-size:12px;color:var(--muted)}
+    nav{display:flex;align-items:center;gap:10px}
+    nav a, nav button{font-weight:600;background:transparent;border:0;padding:8px 12px;border-radius:8px;cursor:pointer;color:#1f2937;text-decoration:none}
+    nav a:hover, nav button:hover{background:#f1f5f9}
+    .btn-primary{background:var(--accent);color:#fff}
+    .btn-primary:hover{background:#005bd1}
+    /* Main placeholder */
+    main{padding:40px;min-height:60vh;display:flex;align-items:center;justify-content:center}
+    .empty{color:var(--muted);font-size:18px}
+    /* Modal */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(2,6,23,0.45);display:flex;align-items:center;justify-content:center;z-index:60}
+    .modal{width:100%;max-width:420px;background:var(--card);border-radius:12px;padding:18px;box-shadow:0 12px 40px rgba(2,6,23,0.2)}
+    .modal h3{margin:0 0 8px}
+    .form-group{margin-top:10px}
+    input{width:100%;padding:10px 12px;border-radius:8px;border:1px solid #e6eef8;font-size:14px}
+    .row{display:flex;gap:8px}
+    .small{font-size:13px;color:var(--muted);margin-top:8px}
+    .actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+    .link{background:transparent;border:0;color:var(--accent);cursor:pointer;padding:8px;border-radius:8px}
+    .error{color:#b91c1c;font-size:13px;margin-top:8px}
+    /* responsive */
+    @media(max-width:520px){header{padding:10px 14px}.brand .title h1{font-size:15px}}
+    /* Sidebar user info */
+#userPanel {
+  position: fixed;
+  top: 0;
+  right: -350px;
+  width: 350px;
+  height: 100%;
+  background: var(--card);
+  border-left: 1px solid #e6eef8;
+  box-shadow: -4px 0 20px rgba(0,0,0,0.05);
+  transition: right 0.3s ease;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+}
+#userPanel.open { right: 0; }
+#userPanel header {
+  background: var(--accent);
+  color: #fff;
+  padding: 14px;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#userPanel header button {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+}
+.user-info {
+  padding: 16px;
+  overflow-y: auto;
+  flex: 1;
+}
+.user-info label { font-weight: 600; display:block; margin-top:8px; }
+.user-info input, .user-info textarea {
+  width: 100%; border:1px solid #e5e7eb; border-radius:8px; padding:8px; font-size:14px;
+}
+.user-info textarea { resize: vertical; min-height:60px; }
+.save-btn {
+  margin-top:10px; background:var(--accent); color:#fff; border:none; padding:8px 12px;
+  border-radius:8px; cursor:pointer;
+}
+.save-btn:hover { background:#005bd1; }
+
+.friend-section {
+  border-top:1px solid #e6eef8;
+  padding:16px;
+}
+.friend-section h4 { margin:0 0 8px; }
+.friend-section input {
+  width: calc(100% - 90px);
+  padding:6px 8px;
+  border-radius:8px;
+  border:1px solid #e5e7eb;
+}
+.friend-section button {
+  width:80px; margin-left:6px; background:var(--accent); color:#fff;
+  border:none; border-radius:8px; padding:6px 8px; cursor:pointer;
+}
+.friend-section button:hover { background:#005bd1; }
+.friend-list { margin-top:10px; font-size:14px; color:var(--muted); }
+
+/* --- Friend invites UI --- */
+.friend-section {
+  margin-top: 16px;
+  background: #fff;
+  padding: 10px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+.friend-section h4 {
+  margin: 0 0 8px;
+}
+.friend-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.mail-btn {
+  border: none;
+  background: #0072ff;
+  color: #fff;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 18px;
+  cursor: pointer;
+}
+.mail-btn:hover {
+  background: #005bd1;
+}
+.friend-invites {
+  margin-top: 8px;
+  border-top: 1px solid #eee;
+  padding-top: 8px;
+}
+.empty-invites {
+  color: #6b7280;
+  font-size: 14px;
+  margin: 4px 0;
+}
+.friend-list {
+  margin-top: 10px;
+}
+.friend-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.friend-list li {
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 6px 10px;
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.friend-list li button {
+  border: none;
+  background: transparent;
+  color: #ef4444;
+  cursor: pointer;
+  font-weight: bold;
+}
+.friend-list li button:hover {
+  color: #b91c1c;
+}
+.invite-row {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:6px 8px;
+  border-radius:8px;
+  background:#f8fafc;
+  margin-bottom:6px;
+}
+.invite-actions button {
+  margin-left:6px;
+  border:none;
+  background:#10b981;
+  color:#fff;
+  padding:6px 8px;
+  border-radius:6px;
+  cursor:pointer;
+}
+.invite-actions button.reject { background:#ef4444; }
+.invite-actions button:hover { opacity:0.9; }
+
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="logo">ED</div>
+      <div class="title">
+        <h1>Môi Trường Số Học Tập</h1>
+        <p>Học — Chia sẻ — Kết nối</p>
+      </div>
+    </div>
+
+    <nav id="nav">
+  <a href="community.html">Cộng đồng</a>
+  <button id="btn-signup" class="">Đăng ký</button>
+  <button id="btn-login" class="btn-primary">Đăng nhập</button>
+</nav>
+
+  </header>
+
+  <main>
+    <div class="empty">Trang chủ đang rỗng — bạn có thể thêm nội dung tại đây.</div>
+  </main>
+  
+  <!-- User Info Sidebar (nếu chưa có) -->
+<div id="userPanel">
+  <header>
+    <span>Thông tin người dùng</span>
+    <button id="closeUserPanel">&times;</button>
+  </header>
+
+  <div class="user-info">
+    <label>Tên người dùng</label>
+    <input id="infoName" type="text" placeholder="Tên người dùng" disabled />
+
+    <label>ID</label>
+    <input id="infoID" type="text" disabled />
+
+    <label>Ngày sinh</label>
+    <input id="infoDOB" type="date" />
+
+    <label>Email</label>
+    <input id="infoEmail" type="email" placeholder="you@example.com" />
+
+    <label>Mô tả</label>
+    <textarea id="infoDesc" placeholder="Giới thiệu về bản thân..."></textarea>
+
+    <button id="saveUserInfo" class="save-btn">Lưu thông tin</button>
+  </div>
+
+  <!-- Friend area: tìm bạn, thư mời, danh sách -->
+  <div class="friend-section">
+    <h4>Kết bạn</h4>
+    <div class="friend-actions">
+      <input id="friendSearchSidebar" type="text" placeholder="Nhập tên hoặc ID..." style="flex:1;padding:8px;border-radius:8px;border:1px solid #e5e7eb" />
+      <button id="friendSearchBtn" style="margin-left:8px;padding:8px 12px;border-radius:8px;background:var(--accent);color:#fff;border:0;cursor:pointer">Tìm</button>
+      <button id="friendMailBtn" title="Hộp thư lời mời" class="mail-btn">📩</button>
+    </div>
+
+    <div id="friendInvites" class="friend-invites" style="display:none;">
+      <p class="empty-invites">📭 Hộp thư trống</p>
+      <!-- nếu có invites sẽ chèn ở đây dạng .invite-row -->
+    </div>
+
+    <div class="friend-list" style="margin-top:10px">
+      <h5 style="margin:6px 0">Danh sách bạn bè</h5>
+      <ul id="friendList"></ul>
+    </div>
+  </div>
+</div>
+
+  
+  <!-- User Info Sidebar -->
+<div id="userPanel">
+  <header>
+    <span>Thông tin người dùng</span>
+    <button id="closeUserPanel">&times;</button>
+  </header>
+
+  <div class="user-info">
+    <label>Tên người dùng</label>
+    <input id="infoName" type="text" placeholder="Tên người dùng" />
+
+    <label>ID</label>
+    <input id="infoID" type="text" disabled />
+
+    <label>Ngày sinh</label>
+    <input id="infoDOB" type="date" />
+
+    <label>Email</label>
+    <input id="infoEmail" type="email" placeholder="you@example.com" />
+
+    <label>Mô tả</label>
+    <textarea id="infoDesc" placeholder="Giới thiệu về bản thân..."></textarea>
+
+    <button id="saveUserInfo" class="save-btn">Lưu thông tin</button>
+  </div>
+
+  <div class="friend-section">
+    <h4>Kết bạn</h4>
+    <div style="display:flex;">
+      <input id="friendSearch" type="text" placeholder="Nhập tên hoặc ID..." />
+      <button id="btnFindFriend">Tìm</button>
+    </div>
+    <div class="friend-list" id="friendList">Không có người dùng nào được hiển thị.</div>
+  </div>
+</div>
+
+
+  <!-- Login Modal -->
+  <div id="modalLogin" style="display:none" aria-hidden="true">
+    <div class="modal-backdrop" role="dialog" aria-modal="true">
+      <div class="modal" role="document">
+        <h3>Đăng nhập</h3>
+        <div class="form-group">
+          <label for="loginUser">Tên đăng nhập</label>
+          <input id="loginUser" type="text" placeholder="Nhập tên đăng nhập" />
+        </div>
+        <div class="form-group">
+          <label for="loginPass">Mật khẩu</label>
+          <input id="loginPass" type="password" placeholder="Nhập mật khẩu" />
+        </div>
+        <div id="loginError" class="error" style="display:none"></div>
+
+        <div class="actions">
+          <button class="link" id="toSignupFromLogin">Chưa có tài khoản?</button>
+          <div style="flex:1"></div>
+          <button id="closeLogin" class="link">Hủy</button>
+          <button id="submitLogin" class="btn-primary">Đăng nhập</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Signup Modal -->
+  <div id="modalSignup" style="display:none" aria-hidden="true">
+    <div class="modal-backdrop" role="dialog" aria-modal="true">
+      <div class="modal" role="document">
+        <h3>Đăng ký</h3>
+        <div class="form-group">
+          <label for="signupUser">Tên đăng nhập</label>
+          <input id="signupUser" type="text" placeholder="Chọn tên đăng nhập" />
+        </div>
+        <div class="form-group">
+          <label for="signupPass">Mật khẩu</label>
+          <input id="signupPass" type="password" placeholder="Mật khẩu" />
+        </div>
+        <div id="signupError" class="error" style="display:none"></div>
+
+        <div class="actions">
+          <button class="link" id="toLoginFromSignup">Đã có tài khoản?</button>
+          <div style="flex:1"></div>
+          <button id="closeSignup" class="link">Hủy</button>
+          <button id="submitSignup" class="btn-primary">Đăng ký</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // Helpers
+  const $ = sel => document.querySelector(sel);
+  const show = el => { el.style.display='block'; el.setAttribute('aria-hidden','false'); }
+  const hide = el => { el.style.display='none'; el.setAttribute('aria-hidden','true'); }
+
+  // Elements
+  const modalLogin = document.getElementById('modalLogin');
+  const modalSignup = document.getElementById('modalSignup');
+  const btnLogin = document.getElementById('btn-login');
+  const btnSignup = document.getElementById('btn-signup');
+  const navEl = document.getElementById('nav');
+
+  // Open/close handlers
+  btnLogin.addEventListener('click', ()=>{ show(modalLogin); $('#loginUser').focus(); $('#loginError').style.display='none'; });
+  btnSignup.addEventListener('click', ()=>{ show(modalSignup); $('#signupUser').focus(); $('#signupError').style.display='none'; });
+
+  $('#closeLogin').addEventListener('click', ()=> hide(modalLogin));
+  $('#closeSignup').addEventListener('click', ()=> hide(modalSignup));
+  $('#toSignupFromLogin').addEventListener('click', ()=>{ hide(modalLogin); show(modalSignup); $('#signupUser').focus(); });
+  $('#toLoginFromSignup').addEventListener('click', ()=>{ hide(modalSignup); show(modalLogin); $('#loginUser').focus(); });
+
+  // Escape to close
+  document.addEventListener('keydown', (e)=> {
+    if(e.key === 'Escape'){ hide(modalLogin); hide(modalSignup); }
+  });
+
+  // LocalStorage helpers
+  function getUsers(){ return JSON.parse(localStorage.getItem('users')||'[]'); }
+  function saveUsers(u){ localStorage.setItem('users', JSON.stringify(u)); }
+
+  // Signup logic
+  document.getElementById('submitSignup').addEventListener('click', ()=>{
+    const u = $('#signupUser').value.trim();
+    const p = $('#signupPass').value;
+    const err = $('#signupError');
+    err.style.display='none';
+    if(!u || !p){ err.textContent='Vui lòng điền đủ thông tin.'; err.style.display='block'; return; }
+    if(p.length < 8 || p.length > 16){
+  err.textContent = 'Mật khẩu phải có từ 8 đến 16 ký tự.';
+  err.style.display = 'block';
+  return;
+}
+
+    const users = getUsers();
+    if(users.find(x=>x.username === u)){ err.textContent='Tên đăng nhập đã tồn tại.'; err.style.display='block'; return; }
+    users.push({ username: u, password: p });
+    saveUsers(users);
+    hide(modalSignup);
+    // Auto-login after signup
+    localStorage.setItem('username', u);
+    updateNavForLoggedIn();
+    alert('Đăng ký thành công! Bạn đã được đăng nhập.');
+  });
+
+  // Login logic
+  document.getElementById('submitLogin').addEventListener('click', ()=>{
+    const u = $('#loginUser').value.trim();
+    const p = $('#loginPass').value;
+    const err = $('#loginError');
+    err.style.display='none';
+    if(!u || !p){ err.textContent='Vui lòng điền đủ thông tin.'; err.style.display='block'; return; }
+    const users = getUsers();
+    const found = users.find(x=>x.username === u && x.password === p);
+    if(!found){ err.textContent='Sai tên đăng nhập hoặc mật khẩu.'; err.style.display='block'; return; }
+    hide(modalLogin);
+    localStorage.setItem('username', u);
+    updateNavForLoggedIn();
+    alert('Đăng nhập thành công!');
+  });
+
+  // Update nav when logged in
+  function updateNavForLoggedIn(){
+    const username = localStorage.getItem('username');
+    if(!username) return resetNav();
+    navEl.innerHTML = `
+  <a href="community.html">Cộng đồng</a>
+  <span style="margin-left:12px">Xin chào, <strong id="nav-user">${username}</strong></span>
+  <button id="logoutBtn" class="link" style="margin-left:8px">Đăng xuất</button>
+`;
+
+    $('#logoutBtn').addEventListener('click', ()=>{
+      localStorage.removeItem('username');
+      resetNav();
+    });
+  }
+
+  function resetNav(){
+    navEl.innerHTML = `
+  <a href="community.html">Cộng đồng</a>
+  <button id="btn-signup" class="">Đăng ký</button>
+  <button id="btn-login" class="btn-primary">Đăng nhập</button>
+`;
+    // re-bind signup/login buttons
+    document.getElementById('btn-login').addEventListener('click', ()=>{ show(modalLogin); $('#loginUser').focus(); $('#loginError').style.display='none'; });
+    document.getElementById('btn-signup').addEventListener('click', ()=>{ show(modalSignup); $('#signupUser').focus(); $('#signupError').style.display='none'; });
+  }
+
+  // Init
+  (function init(){
+    if(localStorage.getItem('username')) updateNavForLoggedIn();
+    // accessibility: click outside modal closes it
+    document.addEventListener('click', function(e){
+      // if click on backdrop (not inside modal)
+      const backdrops = document.querySelectorAll('.modal-backdrop');
+      backdrops.forEach(b => {
+        if(b.style.display !== 'none' && !b.contains(e.target.closest('.modal')) && !e.target.closest('.modal')){
+          hide(modalLogin); hide(modalSignup);
+        }
+      });
+    }, true);
+  })();
+  
+// ========== Sidebar User Info ==========
+const userPanel = document.getElementById('userPanel');
+const closePanelBtn = document.getElementById('closeUserPanel');
+
+// Nút mở khung bên phải
+const openPanelBtn = document.createElement('button');
+openPanelBtn.textContent = '☰';
+openPanelBtn.title = 'Thông tin người dùng';
+openPanelBtn.style.background = 'transparent';
+openPanelBtn.style.border = 'none';
+openPanelBtn.style.fontSize = '20px';
+openPanelBtn.style.cursor = 'pointer';
+openPanelBtn.style.marginLeft = '10px';
+document.querySelector('header .brand').appendChild(openPanelBtn);
+
+openPanelBtn.addEventListener('click', ()=>{
+  userPanel.classList.add('open');
+  showUserInfo();
+});
+
+closePanelBtn.addEventListener('click', ()=> userPanel.classList.remove('open'));
+
+// Hiển thị thông tin người dùng
+function showUserInfo(){
+  const username = localStorage.getItem('username');
+  const users = getUsers();
+
+  if(username){
+    const found = users.find(u => u.username === username);
+    if(!found.id){
+      found.id = '#' + (1000 + users.indexOf(found));
+      saveUsers(users);
+    }
+
+    // Hiện thông tin thật
+    $('#infoName').value = found.username;
+    $('#infoID').value = found.id || '';
+    $('#infoDOB').value = found.dob || '';
+    $('#infoEmail').value = found.email || '';
+    $('#infoDesc').value = found.desc || '';
+
+    // Cho phép chỉnh sửa trừ tên & id
+    $('#infoName').disabled = true;
+    $('#infoID').disabled = true;
+    $('#infoDOB').disabled = false;
+    $('#infoEmail').disabled = false;
+    $('#infoDesc').disabled = false;
+  } else {
+    // Hiện dạng ẩn nếu chưa đăng nhập
+    $('#infoName').value = 'Chưa đăng nhập';
+    $('#infoID').value = 'Ẩn';
+    $('#infoDOB').value = 'Ẩn';
+    $('#infoEmail').value = 'Ẩn';
+    $('#infoDesc').value = 'Ẩn';
+
+    // Không cho chỉnh sửa
+    $('#infoName').disabled = true;
+    $('#infoID').disabled = true;
+    $('#infoDOB').disabled = true;
+    $('#infoEmail').disabled = true;
+    $('#infoDesc').disabled = true;
+  }
+}
+
+$('#saveUserInfo').addEventListener('click', ()=>{
+  const username = localStorage.getItem('username');
+  if(!username){ alert('Bạn cần đăng nhập để lưu thông tin!'); return; }
+
+  const users = getUsers();
+  const found = users.find(u => u.username === username);
+  if(!found) return;
+
+  found.dob = $('#infoDOB').value;
+  found.email = $('#infoEmail').value.trim();
+  found.desc = $('#infoDesc').value.trim();
+  saveUsers(users);
+
+  alert('Đã lưu thông tin cá nhân!');
+});
+
+// ========== Tìm & Kết bạn ==========
+const btnFindFriend = document.getElementById('btnFindFriend');
+const friendList = document.getElementById('friendList');
+
+btnFindFriend.addEventListener('click', ()=>{
+  const keyword = $('#friendSearch').value.trim().toLowerCase();
+  const users = getUsers();
+  const found = users.find(u =>
+    u.username.toLowerCase() === keyword ||
+    (u.id && u.id.toLowerCase() === keyword)
+  );
+
+  if(!found){
+    friendList.textContent = 'Người dùng không tồn tại.';
+  } else {
+    friendList.textContent = 'Đã tìm thấy: ' + found.username + ' ✅';
+  }
+});
+
+// --- Friend invites + friends list (sidebar) ---
+const mailBtn = document.getElementById('friendMailBtn');
+const invitesBox = document.getElementById('friendInvites');
+const friendListEl = document.getElementById('friendList');
+const friendSearchSidebar = document.getElementById('friendSearchSidebar');
+const friendSearchBtn = document.getElementById('friendSearchBtn');
+
+// Toggle hiển thị hộp thư
+if (mailBtn) {
+  mailBtn.addEventListener('click', () => {
+    if (!invitesBox) return;
+    invitesBox.style.display = (invitesBox.style.display === 'block') ? 'none' : 'block';
+  });
+}
+
+// Hàm lấy invites (mảng) — hiện mặc định là rỗng
+function getInvites(){ return JSON.parse(localStorage.getItem('invites')||'[]'); }
+function saveInvites(arr){ localStorage.setItem('invites', JSON.stringify(arr)); }
+
+// Hàm lấy và lưu friends
+function getFriendsList(){ return JSON.parse(localStorage.getItem('friends')||'[]'); }
+function saveFriendsList(arr){ localStorage.setItem('friends', JSON.stringify(arr)); }
+
+// Render invites (nếu có)
+function renderInvites(){
+  const invites = getInvites();
+  if(!invites.length){
+    invitesBox.innerHTML = '<p class="empty-invites">📭 Hộp thư trống</p>';
+    return;
+  }
+  invitesBox.innerHTML = '';
+  invites.forEach((inv, idx) => {
+    const row = document.createElement('div');
+    row.className = 'invite-row';
+    row.innerHTML = `
+      <div><strong>${inv.fromName}</strong> đã gửi lời mời</div>
+      <div class="invite-actions">
+        <button class="accept-btn" data-idx="${idx}">[+]</button>
+        <button class="reject-btn" data-idx="${idx}">Xóa</button>
+      </div>
+    `;
+    invitesBox.appendChild(row);
+  });
+
+  // bind accept/reject
+  invitesBox.querySelectorAll('.accept-btn').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      const i = parseInt(e.target.getAttribute('data-idx'));
+      const invites = getInvites();
+      const accepted = invites.splice(i,1)[0]; // remove invite
+      saveInvites(invites);
+      // add to friends
+      const friends = getFriendsList();
+      friends.push({ name: accepted.fromName, id: accepted.fromId || '' });
+      saveFriendsList(friends);
+      renderInvites();
+      renderFriends();
+    });
+  });
+  invitesBox.querySelectorAll('.reject-btn').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      const i = parseInt(e.target.getAttribute('data-idx'));
+      const invites = getInvites();
+      invites.splice(i,1);
+      saveInvites(invites);
+      renderInvites();
+    });
+  });
+}
+
+// Render danh sách bạn bè
+function renderFriends(){
+  const friends = getFriendsList();
+  friendListEl.innerHTML = '';
+  if(!friends.length){
+    friendListEl.innerHTML = '<li class="empty-invites">Bạn chưa có bạn bè nào.</li>';
+    return;
+  }
+  friends.forEach(f=>{
+    const li = document.createElement('li');
+    li.innerHTML = `<span>${f.name}${f.id? ' ('+f.id+')':''}</span> <button class="unfriend" data-name="${f.name}">❌</button>`;
+    friendListEl.appendChild(li);
+  });
+  // bind unfriend
+  friendListEl.querySelectorAll('.unfriend').forEach(btn=>{
+    btn.addEventListener('click', e=>{
+      const name = e.target.getAttribute('data-name');
+      let friends = getFriendsList();
+      friends = friends.filter(x=> x.name !== name);
+      saveFriendsList(friends);
+      renderFriends();
+    });
+  });
+}
+
+// Tìm user (tìm theo users đã đăng ký)
+if(friendSearchBtn){
+  friendSearchBtn.addEventListener('click', ()=>{
+    const keyword = (friendSearchSidebar.value||'').trim().toLowerCase();
+    if(!keyword) return alert('Nhập tên hoặc ID để tìm');
+    const users = getUsers(); // hàm getUsers() có trong code gốc
+    const found = users.find(u => u.username.toLowerCase()===keyword || (u.id && u.id.toLowerCase()===keyword));
+    if(!found){
+      alert('Người dùng không tồn tại.');
+      return;
+    }
+    // Gửi lời mời: push vào invites của target user
+    // Lưu ý: vì dữ liệu ở localStorage chung cho tất cả demo, ta lưu invites ở root.
+    // invites = [{to: 'targetUser', fromName: 'currentUser', fromId:'#100x'}]
+    const current = localStorage.getItem('username') || 'Khách';
+    const invites = getInvites();
+    invites.push({ to: found.username, fromName: current, fromId: found.id || '' });
+    saveInvites(invites);
+    alert('Đã gửi lời mời (demo).');
+    // nếu sidebar đang mở, render lại để thấy thay đổi (nếu có)
+    renderInvites();
+    renderFriends();
+  });
+}
+
+// Init render
+renderInvites();
+renderFriends();
+
+
+</script>
+
+</body>
+</html>
