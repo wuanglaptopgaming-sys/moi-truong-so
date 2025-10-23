@@ -192,6 +192,109 @@
 .invite-actions button.reject { background:#ef4444; }
 .invite-actions button:hover { opacity:0.9; }
 
+  /* Hiệu ứng mờ dần + phóng to ảnh minh họa */
+  @keyframes fadeZoomIn {
+    0% {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .intro-section {
+    width: 100%;
+    background: linear-gradient(135deg, #eef5ff, #ffffff);
+    padding: 80px 100px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .intro-text {
+    flex: 1;
+    padding-right: 60px;
+  }
+
+  .intro-text h1 {
+    font-size: 42px;
+    color: #1a73e8;
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+
+  .intro-text h2 {
+    font-size: 22px;
+    color: #333;
+    margin-bottom: 20px;
+  }
+
+  .intro-text p {
+    font-size: 17px;
+    color: #555;
+    line-height: 1.8;
+    max-width: 520px;
+  }
+
+  .intro-buttons {
+    margin-top: 30px;
+  }
+
+  .intro-buttons button {
+    border: none;
+    border-radius: 30px;
+    padding: 12px 26px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .intro-buttons .primary {
+    background: #1a73e8;
+    color: white;
+  }
+
+  .intro-buttons .primary:hover {
+    background: #0f5bc4;
+  }
+
+  .intro-buttons .outline {
+    background: transparent;
+    border: 2px solid #1a73e8;
+    color: #1a73e8;
+    margin-left: 10px;
+  }
+
+  .intro-buttons .outline:hover {
+    background: #1a73e8;
+    color: #fff;
+  }
+
+  .intro-image {
+    flex: 1.2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    animation: fadeZoomIn 1.3s ease forwards;
+  }
+
+  .intro-image img {
+    width: 100%;
+    max-width: 600px;
+    opacity: 0.95;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    transition: transform 4s ease-in-out;
+  }
+
+  .intro-image img:hover {
+    transform: scale(1.05);
+  }
   </style>
 </head>
 <body>
@@ -213,9 +316,47 @@
 
   </header>
 
-  <main>
-    <div class="empty">Trang chủ đang rỗng — bạn có thể thêm nội dung tại đây.</div>
-  </main>
+<main class="intro-section">
+  <!-- Bên trái: Giới thiệu -->
+  <div class="intro-text">
+    <h1>🎓 Môi Trường Số Học Tập</h1>
+    <h2>Nền tảng học tập – kết nối – sẻ chia</h2>
+    <p>
+      Đây là không gian trực tuyến dành riêng cho sinh viên, nơi bạn có thể
+      <b>chia sẻ bài tập, hỗ trợ nhau học tập, thảo luận, kết bạn và cùng nhau tiến bộ</b>.
+      <br><br>
+      Hãy cùng nhau xây dựng cộng đồng học tập năng động và thân thiện nhất! 🚀
+    </p>
+
+   
+    
+  </div>
+
+  <!-- Bên phải: Hình minh họa -->
+  <div class="intro-image">
+    <img src="https://cdn.tgdd.vn/hoi-dap/1318099/7-loi-ich-cua-internet-mang-lai-cho-con-nguoi-trong-doi%20(10).jpg" alt="Hình minh họa học tập">
+  </div>
+</main>
+
+<!-- Phần nội dung dưới (bài đăng gần đây + bài đăng hot) -->
+<section style="display: flex; flex-direction: row; justify-content: space-between; padding: 40px 80px; gap: 30px; box-sizing: border-box;">
+
+  <!-- Bài đăng gần đây -->
+  <div style="flex: 1; background: #f8faff; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); padding: 25px;">
+    <h3 style="color: #1a73e8; border-bottom: 2px solid #c9dcff; padding-bottom: 8px; font-size: 20px;">🕓 Bài đăng gần đây</h3>
+    <p style="color: #777; font-style: italic; margin-top: 15px;">Hiện chưa có bài đăng nào được tạo.</p>
+  </div>
+
+  <!-- Bài đăng hot nhất tháng -->
+  <div style="flex: 1; background: #fff7f0; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); padding: 25px;">
+    <h3 style="color: #e67e22; border-bottom: 2px solid #f3d1a2; padding-bottom: 8px; font-size: 20px;">🔥 Bài đăng hot nhất tháng</h3>
+    <p style="color: #999; font-style: italic; margin-top: 15px;">(Chưa có dữ liệu hiển thị.)</p>
+  </div>
+
+</section>
+
+
+
   
   <!-- User Info Sidebar (nếu chưa có) -->
 <div id="userPanel">
@@ -404,7 +545,7 @@
     // Auto-login after signup
     localStorage.setItem('username', u);
     updateNavForLoggedIn();
-    alert('Đăng ký thành công! Bạn đã được đăng nhập.');
+   
   });
 
   // Login logic
@@ -420,7 +561,7 @@
     hide(modalLogin);
     localStorage.setItem('username', u);
     updateNavForLoggedIn();
-    alert('Đăng nhập thành công!');
+    
   });
 
   // Update nav when logged in
@@ -542,7 +683,7 @@ $('#saveUserInfo').addEventListener('click', ()=>{
   found.desc = $('#infoDesc').value.trim();
   saveUsers(users);
 
-  alert('Đã lưu thông tin cá nhân!');
+ 
 });
 
 // ========== Tìm & Kết bạn ==========
@@ -642,11 +783,36 @@ function renderFriends(){
     friendListEl.innerHTML = '<li class="empty-invites">Bạn chưa có bạn bè nào.</li>';
     return;
   }
+  function renderFriends(){
+  const friends = getFriendsList();
+  friendListEl.innerHTML = '';
+  if(!friends.length){
+    friendListEl.innerHTML = '<li class="empty-invites">Chưa có bạn bè nào.</li>';
+    return;
+  }
   friends.forEach(f=>{
+    const friendName = f.name || 'Người dùng';
+    const friendId = f.id ? ` (${f.id})` : '';
     const li = document.createElement('li');
-    li.innerHTML = `<span>${f.name}${f.id? ' ('+f.id+')':''}</span> <button class="unfriend" data-name="${f.name}">❌</button>`;
+    li.innerHTML = `
+      <span>${friendName}${friendId}</span>
+      <button class="unfriend" data-name="${friendName}">❌</button>
+    `;
     friendListEl.appendChild(li);
   });
+
+  // nút hủy kết bạn
+  friendListEl.querySelectorAll('.unfriend').forEach(btn=>{
+    btn.addEventListener('click', e=>{
+      const name = e.target.getAttribute('data-name');
+      let friends = getFriendsList();
+      friends = friends.filter(x=> x.name !== name);
+      saveFriendsList(friends);
+      renderFriends();
+    });
+  });
+}
+
   // bind unfriend
   friendListEl.querySelectorAll('.unfriend').forEach(btn=>{
     btn.addEventListener('click', e=>{
@@ -677,7 +843,7 @@ if(friendSearchBtn){
     const invites = getInvites();
     invites.push({ to: found.username, fromName: current, fromId: found.id || '' });
     saveInvites(invites);
-    alert('Đã gửi lời mời (demo).');
+    
     // nếu sidebar đang mở, render lại để thấy thay đổi (nếu có)
     renderInvites();
     renderFriends();
