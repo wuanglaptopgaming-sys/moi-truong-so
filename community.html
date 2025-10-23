@@ -1,0 +1,273 @@
+<!communication html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cổng Đăng Bài</title>
+<style>
+  body {
+    font-family: "Segoe UI", sans-serif;
+    background-color: #e6f0ff;
+    margin: 0;
+    padding: 0;
+  }
+  header {
+    background-color: #66a3ff;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    font-size: 26px;
+    font-weight: bold;
+  }
+  main {
+    max-width: 650px;
+    margin: 30px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  }
+  h2 {
+    color: #005ce6;
+    text-align: center;
+    margin-bottom: 15px;
+  }
+  .upload-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  label {
+    font-weight: bold;
+    color: #0047b3;
+  }
+  input[type="text"], textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #b3d1ff;
+    border-radius: 8px;
+  }
+  input[type="file"] {
+    display: none;
+  }
+  .custom-file-label {
+    background-color: #99c2ff;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: 0.3s;
+  }
+  .custom-file-label:hover {
+    background-color: #4d94ff;
+  }
+  button {
+    background-color: #3399ff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  button:hover {
+    background-color: #0073e6;
+  }
+  .post {
+    background-color: #f2f7ff;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 20px;
+  }
+  .actions {
+    margin-top: 10px;
+  }
+  .actions button {
+    margin-right: 10px;
+  }
+  .preview {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+  .media-container {
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 10px;
+  }
+  .media-container img, .media-container video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .delete-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(255, 0, 0, 0.8);
+    border: none;
+    color: white;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+  }
+  .comment-section {
+    margin-top: 15px;
+    border-top: 1px solid #cce0ff;
+    padding-top: 10px;
+  }
+  .comment-section input {
+    width: 80%;
+    padding: 6px;
+    border: 1px solid #b3d1ff;
+    border-radius: 8px;
+  }
+  .comment-section button {
+    padding: 6px 10px;
+  }
+  .comment-list {
+    margin-top: 10px;
+    background-color: #f9fbff;
+    padding: 8px;
+    border-radius: 8px;
+  }
+  .comment {
+    margin-bottom: 5px;
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+
+<header>CỔNG ĐĂNG BÀI</header>
+
+<main>
+  <h2>Đăng bài</h2>
+
+  <div class="upload-section">
+    <label for="title">Tiêu đề:</label>
+    <input type="text" id="title" placeholder="Nhập tiêu đề bài...">
+
+    <label for="content">Nội dung:</label>
+    <textarea id="content" rows="4" placeholder="Nhập nội dung..."></textarea>
+
+    <label for="images" class="custom-file-label">📷 Chọn hình ảnh</label>
+    <input type="file" id="images" accept="image/*" multiple onchange="xemTruocNhieuFile('image')">
+
+    <label for="videos" class="custom-file-label">🎥 Chọn video</label>
+    <input type="file" id="videos" accept="video/*" multiple onchange="xemTruocNhieuFile('video')">
+
+    <label for="file" class="custom-file-label">📄 Chọn tệp tài liệu</label>
+    <input type="file" id="file" accept=".pdf,.doc,.docx,.ppt,.pptx">
+
+    <div id="preview" class="preview"></div>
+
+    <button onclick="dangBai()">Đăng bài</button>
+  </div>
+
+  <div id="postList"></div>
+</main>
+
+<script>
+let previewData = [];
+
+function xemTruocNhieuFile(type) {
+  const input = document.getElementById(type === 'image' ? 'images' : 'videos');
+  const preview = document.getElementById("preview");
+
+  for (let file of input.files) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const container = document.createElement("div");
+      container.className = "media-container";
+      const media = type === "image"
+        ? `<img src="${e.target.result}" alt="ảnh">`
+        : `<video controls src="${e.target.result}"></video>`;
+      container.innerHTML = media + `<button class="delete-btn" onclick="xoaFile(this)">×</button>`;
+      preview.appendChild(container);
+      previewData.push({ type, src: e.target.result });
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+function xoaFile(btn) {
+  const container = btn.parentElement;
+  const src = container.querySelector('img, video').src;
+  previewData = previewData.filter(item => item.src !== src);
+  container.remove();
+}
+
+function dangBai() {
+  const title = document.getElementById('title').value;
+  const content = document.getElementById('content').value;
+  const file = document.getElementById('file').files[0];
+
+  if (!title || !content) {
+    alert("Vui lòng nhập tiêu đề và nội dung!");
+    return;
+  }
+
+  const postDiv = document.createElement("div");
+  postDiv.className = "post";
+
+  let mediaHTML = previewData.map(item => `
+    <div class="media-container">
+      ${item.type === "image" ? `<img src="${item.src}">` : `<video controls src="${item.src}"></video>`}
+    </div>`).join("");
+
+  postDiv.innerHTML = `
+    <h3>${title}</h3>
+    <p>${content}</p>
+    <div class="preview">${mediaHTML}</div>
+    ${file ? `<p>📎 Tệp đính kèm: ${file.name}</p>` : ""}
+    <div class="actions">
+      <button onclick="this.textContent='❤️ '+(parseInt(this.dataset.count = (this.dataset.count||0)) + 1)">❤️ Thích</button>
+      <button onclick="hienBinhLuan(this)">💬 Bình luận</button>
+      <button>📤 Chia sẻ</button>
+      <button onclick="this.closest('.post').remove()">🗑️ Xóa</button>
+    </div>
+    <div class="comment-section" style="display:none;">
+      <input type="text" placeholder="Nhập bình luận...">
+      <button onclick="dangBinhLuan(this)">Gửi</button>
+      <div class="comment-list"></div>
+    </div>
+  `;
+  document.getElementById("postList").prepend(postDiv);
+
+  // Reset form
+  document.getElementById('title').value = '';
+  document.getElementById('content').value = '';
+  document.getElementById('images').value = '';
+  document.getElementById('videos').value = '';
+  document.getElementById('file').value = '';
+  document.getElementById('preview').innerHTML = '';
+  previewData = [];
+}
+
+function hienBinhLuan(button) {
+  const section = button.closest('.post').querySelector('.comment-section');
+  section.style.display = section.style.display === 'none' ? 'block' : 'none';
+}
+
+function dangBinhLuan(button) {
+  const input = button.previousElementSibling;
+  const list = button.nextElementSibling;
+  if (!input.value.trim()) return;
+  const cmt = document.createElement("div");
+  cmt.className = "comment";
+  cmt.textContent = "💬 " + input.value;
+  list.appendChild(cmt);
+  input.value = "";
+}
+</script>
+
+</body>
+</html>
