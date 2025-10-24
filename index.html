@@ -43,6 +43,11 @@
   .intro-image img{width:100%;max-width:520px;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,0.08);transform-origin:center;animation:fadeZoomIn 1s ease}
   @keyframes fadeZoomIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
 
+  /* Lower columns */
+  .columns{display:flex;gap:28px;padding:36px 60px;box-sizing:border-box}
+  .card{background:#fff;border-radius:14px;padding:20px;box-shadow:0 6px 18px rgba(2,6,23,0.06);flex:1}
+  .card h3{margin:0 0 12px;font-size:18px}
+
   /* Sidebar user panel (off-canvas) */
   #userPanel {
     position: fixed; top: 0; right: -380px; width: 380px; height: 100%; background: var(--card);
@@ -72,7 +77,8 @@
   .friend-item img{width:40px;height:40px;border-radius:50%;object-fit:cover}
   .invite-row{display:flex;justify-content:space-between;align-items:center;padding:8px;margin-bottom:8px;border-radius:8px;background:#f8fafc}
 
-  @media(max-width:880px){ .intro-section{flex-direction:column;padding:28px} #userPanel{width:100%;} }
+  /* small responsive */
+  @media(max-width:880px){ .intro-section{flex-direction:column;padding:28px} .columns{flex-direction:column;padding:24px} #userPanel{width:100%;} }
 </style>
 </head>
 <body>
@@ -107,35 +113,511 @@
   </div>
 </main>
 
-<!-- (ĐÃ BỎ PHẦN BÀI ĐĂNG GẦN ĐÂY & HOT NHẤT) -->
 
-<!-- User Panel, Login/Signup modals và toàn bộ script -->
-<!-- (phần sau giữ nguyên y như bản gốc của bạn) -->
+<!-- User Panel (off-canvas right) -->
+<div id="userPanel" aria-hidden="true">
+  <header>
+    <span>Thông tin người dùng</span>
+    <button id="closeUserPanel" aria-label="Đóng">&times;</button>
+  </header>
+
+  <div class="user-info">
+    <div class="avatar-area">
+      <img id="avatarPreview" alt="Avatar">
+      <div class="small-note">Ảnh đại diện</div>
+      <input id="infoAvatar" type="file" accept="image/*" style="display:none">
+      <div style="margin-top:8px">
+        <button id="changeAvatarBtn" style="padding:8px 10px;border-radius:8px;border:0;background:#eee;cursor:pointer">Đổi ảnh</button>
+      </div>
+    </div>
+
+    <label>Tên người dùng</label>
+    <input id="infoName" type="text" disabled>
+
+    <label>ID</label>
+    <input id="infoID" type="text" disabled>
+
+    <label>Ngày sinh</label>
+    <input id="infoDOB" type="date">
+
+    <label>Email</label>
+    <input id="infoEmail" type="email" placeholder="you@example.com">
+
+    <label>Mô tả</label>
+    <textarea id="infoDesc" placeholder="Giới thiệu về bản thân..."></textarea>
+
+    <button id="saveUserInfo" class="save-btn">Lưu thông tin</button>
+
+    <div class="friend-section">
+      <h4 style="margin:0 0 8px">Kết bạn</h4>
+      <div class="friend-actions">
+        <input id="friendSearchSidebar" placeholder="Tìm theo tên hoặc ID...">
+        <button id="friendSearchBtn">Tìm</button>
+        <button id="friendMailBtn" title="Hộp thư lời mời" style="width:40px;border-radius:8px;background:var(--accent);color:#fff;border:0">📩</button>
+      </div>
+
+      <div id="friendInvites" style="display:none;margin-top:10px">
+        <!-- invites inserted here -->
+      </div>
+
+      <div class="friend-list" id="friendListArea" style="margin-top:10px">
+        <!-- friends inserted here -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Login Modal -->
+<div id="modalLogin" style="display:none" aria-hidden="true">
+  <div class="modal-backdrop" role="dialog" aria-modal="true" style="position:fixed;inset:0;background:rgba(2,6,23,0.45);display:flex;align-items:center;justify-content:center;z-index:70">
+    <div class="modal" role="document" style="width:100%;max-width:420px;background:var(--card);border-radius:12px;padding:18px;box-shadow:0 12px 40px rgba(2,6,23,0.2)">
+      <h3>Đăng nhập</h3>
+      <div class="form-group"><label for="loginUser">Tên đăng nhập</label><input id="loginUser" type="text" placeholder="Tên đăng nhập"></div>
+      <div class="form-group"><label for="loginPass">Mật khẩu</label><input id="loginPass" type="password" placeholder="Mật khẩu"></div>
+      <div id="loginError" style="color:#b91c1c;display:none;margin-top:8px"></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+        <button class="link" id="toSignupFromLogin">Chưa có tài khoản?</button>
+        <button id="closeLogin" class="link">Hủy</button>
+        <button id="submitLogin" class="btn-primary">Đăng nhập</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Signup Modal -->
+<div id="modalSignup" style="display:none" aria-hidden="true">
+  <div class="modal-backdrop" role="dialog" aria-modal="true" style="position:fixed;inset:0;background:rgba(2,6,23,0.45);display:flex;align-items:center;justify-content:center;z-index:70">
+    <div class="modal" role="document" style="width:100%;max-width:420px;background:var(--card);border-radius:12px;padding:18px;box-shadow:0 12px 40px rgba(2,6,23,0.2)">
+      <h3>Đăng ký</h3>
+      <div class="form-group"><label for="signupUser">Tên đăng nhập</label><input id="signupUser" type="text" placeholder="Tên đăng nhập"></div>
+      <div class="form-group"><label for="signupPass">Mật khẩu</label><input id="signupPass" type="password" placeholder="Mật khẩu (8-16 ký tự)"></div>
+      <div id="signupError" style="color:#b91c1c;display:none;margin-top:8px"></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+        <button class="link" id="toLoginFromSignup">Đã có tài khoản?</button>
+        <button id="closeSignup" class="link">Hủy</button>
+        <button id="submitSignup" class="btn-primary">Đăng ký</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
-/* --- Toàn bộ JavaScript của bạn giữ nguyên từ đây --- */
-</script>
+/* ---------- Helpers & storage ---------- */
+const $ = sel => document.querySelector(sel);
+const $$ = sel => document.querySelectorAll(sel);
 
+function getUsers(){ return JSON.parse(localStorage.getItem('users')||'[]'); }
+function saveUsers(arr){ localStorage.setItem('users', JSON.stringify(arr)); }
 
-<script>
-// ====== XỬ LÝ NÚT ĐĂNG NHẬP / ĐĂNG KÝ ======
-document.getElementById("btn-login").onclick = () => {
-  // hiển thị modal đăng nhập
-  alert("Mở khung đăng nhập (chèn code modal tại đây)");
-};
+function getInvites(){ return JSON.parse(localStorage.getItem('invites')||'[]'); }
+function saveInvites(arr){ localStorage.setItem('invites', JSON.stringify(arr)); }
 
-document.getElementById("btn-signup").onclick = () => {
-  // hiển thị modal đăng ký
-  alert("Mở khung đăng ký (chèn code modal tại đây)");
-};
+/* default cat avatar */
+const DEFAULT_AVATAR = 'https://i.imgur.com/6VBx3io.png'; // cute cat
 
-// Nếu file của bạn có phần modal (popup login/signup) riêng,
-// bạn có thể gọi các hàm openLoginModal() hoặc openSignupModal() ở đây thay vì alert.
+/* ---------- Elements ---------- */
+const navEl = document.getElementById('nav');
+const btnLogin = document.getElementById('btn-login');
+const btnSignup = document.getElementById('btn-signup');
+const modalLogin = document.getElementById('modalLogin');
+const modalSignup = document.getElementById('modalSignup');
+const closeLogin = document.getElementById('closeLogin');
+const closeSignup = document.getElementById('closeSignup');
+
+const userPanel = document.getElementById('userPanel');
+const closeUserPanel = document.getElementById('closeUserPanel');
+const avatarPreview = document.getElementById('avatarPreview');
+const infoAvatarInput = document.getElementById('infoAvatar');
+const changeAvatarBtn = document.getElementById('changeAvatarBtn');
+const saveUserInfoBtn = document.getElementById('saveUserInfo');
+
+const infoName = document.getElementById('infoName');
+const infoID = document.getElementById('infoID');
+const infoDOB = document.getElementById('infoDOB');
+const infoEmail = document.getElementById('infoEmail');
+const infoDesc = document.getElementById('infoDesc');
+
+const friendSearchSidebar = document.getElementById('friendSearchSidebar');
+const friendSearchBtn = document.getElementById('friendSearchBtn');
+const friendInvitesBox = document.getElementById('friendInvites');
+const friendListArea = document.getElementById('friendListArea');
+const friendMailBtn = document.getElementById('friendMailBtn');
+
+/* modal form fields */
+const signupUser = document.getElementById('signupUser');
+const signupPass = document.getElementById('signupPass');
+const signupError = document.getElementById('signupError');
+const submitSignup = document.getElementById('submitSignup');
+
+const loginUser = document.getElementById('loginUser');
+const loginPass = document.getElementById('loginPass');
+const loginError = document.getElementById('loginError');
+const submitLogin = document.getElementById('submitLogin');
+
+/* ---------- UI behavior ---------- */
+// open panels
+changeAvatarBtn.addEventListener('click', ()=> infoAvatarInput.click());
+closeUserPanel.addEventListener('click', ()=> userPanel.classList.remove('open'));
+
+// open login/signup
+btnLogin.addEventListener('click', ()=> { modalLogin.style.display='block'; modalSignup.style.display='none'; loginError.style.display='none'; });
+btnSignup.addEventListener('click', ()=> { modalSignup.style.display='block'; modalLogin.style.display='none'; signupError.style.display='none'; });
+closeLogin.addEventListener('click', ()=> modalLogin.style.display='none');
+closeSignup.addEventListener('click', ()=> modalSignup.style.display='none');
+document.getElementById('toSignupFromLogin').addEventListener('click', ()=> { modalLogin.style.display='none'; modalSignup.style.display='block'; });
+document.getElementById('toLoginFromSignup').addEventListener('click', ()=> { modalSignup.style.display='none'; modalLogin.style.display='block'; });
+
+/* ---------- Signup / Login ---------- */
+function genUserId(users){
+  // generate id like #1001 incrementally
+  const base = 1000 + users.length + 1;
+  return '#'+base;
+}
+
+submitSignup.addEventListener('click', ()=>{
+  signupError.style.display='none';
+  const u = signupUser.value.trim();
+  const p = signupPass.value;
+  if(!u || !p){ signupError.textContent='Vui lòng điền đủ thông tin.'; signupError.style.display='block'; return; }
+  if(p.length < 8 || p.length > 16){ signupError.textContent='Mật khẩu phải có từ 8 đến 16 ký tự.'; signupError.style.display='block'; return; }
+  const users = getUsers();
+  if(users.find(x=>x.username.toLowerCase() === u.toLowerCase())){ signupError.textContent='Tên đăng nhập đã tồn tại.'; signupError.style.display='block'; return; }
+  const newUser = { username: u, password: p, id: genUserId(users), avatar: null, dob:'', email:'', desc:'', friends: [] };
+  users.push(newUser);
+  saveUsers(users);
+  localStorage.setItem('username', u);
+  modalSignup.style.display='none';
+  renderNav(); // show logged in state
+  showUserInfo(); // open panel with info
+});
+
+submitLogin.addEventListener('click', ()=>{
+  loginError.style.display='none';
+  const u = loginUser.value.trim();
+  const p = loginPass.value;
+  if(!u || !p){ loginError.textContent='Vui lòng điền đủ thông tin.'; loginError.style.display='block'; return; }
+  const users = getUsers();
+  const found = users.find(x=>x.username === u && x.password === p);
+  if(!found){ loginError.textContent='Sai tên đăng nhập hoặc mật khẩu.'; loginError.style.display='block'; return; }
+  localStorage.setItem('username', u);
+  modalLogin.style.display='none';
+  renderNav();
+});
+
+/* ---------- Navigation ---------- */
+function resetNav(){
+  navEl.innerHTML = `
+    <a href="community.html">Cộng đồng</a>
+    <button id="btn-signup">Đăng ký</button>
+    <button id="btn-login" class="btn-primary">Đăng nhập</button>
+  `;
+  // rebind
+  document.getElementById('btn-login').addEventListener('click', ()=> { modalLogin.style.display='block'; modalSignup.style.display='none'; });
+  document.getElementById('btn-signup').addEventListener('click', ()=> { modalSignup.style.display='block'; modalLogin.style.display='none'; });
+}
+
+function renderNav(){
+  const username = localStorage.getItem('username');
+  if(!username){ resetNav(); return; }
+  const users = getUsers();
+  const me = users.find(u=>u.username === username);
+  const avatar = (me && me.avatar) ? me.avatar : DEFAULT_AVATAR;
+  navEl.innerHTML = `
+    <a href="community.html">Cộng đồng</a>
+    <img id="navAvatar" src="${avatar}" alt="avatar" style="width:36px;height:36px;border-radius:50%;object-fit:cover;cursor:pointer;margin-left:6px">
+    <span style="margin-left:8px">Xin chào, <strong id="nav-user">${username}</strong></span>
+    <button id="logoutBtn" class="link" style="margin-left:8px">Đăng xuất</button>
+  `;
+  $('#logoutBtn').addEventListener('click', ()=>{
+    localStorage.removeItem('username');
+    renderNav();
+  });
+  // open user panel when click avatar/name
+  $('#navAvatar').addEventListener('click', ()=>{ userPanel.classList.add('open'); showUserInfo(); });
+  document.getElementById('nav-user').addEventListener('click', ()=>{ userPanel.classList.add('open'); showUserInfo(); });
+}
+
+/* ---------- User Panel logic ---------- */
+function showUserInfo(){
+  const username = localStorage.getItem('username');
+  const users = getUsers();
+  // fill
+  if(!username){
+    // show default placeholders
+    avatarPreview.src = DEFAULT_AVATAR;
+    infoName.value = 'Chưa đăng nhập';
+    infoID.value = 'Ẩn';
+    infoDOB.value = '';
+    infoEmail.value = '';
+    infoDesc.value = '';
+    // disable edit except avatar change blocked
+    infoDOB.disabled = true; infoEmail.disabled = true; infoDesc.disabled = true; changeAvatarBtn.disabled = true;
+    friendListArea.innerHTML = '<div style="color:var(--muted)">Bạn chưa đăng nhập.</div>';
+    friendInvitesBox.style.display='none';
+    return;
+  }
+  const me = users.find(u=>u.username === username);
+  if(!me){
+    avatarPreview.src = DEFAULT_AVATAR;
+    return;
+  }
+  avatarPreview.src = me.avatar || DEFAULT_AVATAR;
+  infoName.value = me.username;
+  infoID.value = me.id;
+  infoDOB.value = me.dob || '';
+  infoEmail.value = me.email || '';
+  infoDesc.value = me.desc || '';
+  infoDOB.disabled = false; infoEmail.disabled = false; infoDesc.disabled = false; changeAvatarBtn.disabled = false;
+
+  // render friends (me.friends)
+  renderFriendsForUser(me);
+  // render invites addressed to me
+  renderInvitesForUser(me.username);
+}
+
+changeAvatarBtn.addEventListener('click', ()=> infoAvatarInput.click());
+infoAvatarInput.addEventListener('change', (e)=>{
+  const f = e.target.files[0];
+  if(!f) return;
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    const data = ev.target.result;
+    avatarPreview.src = data;
+    // save to current user object
+    const username = localStorage.getItem('username');
+    if(!username) return;
+    const users = getUsers();
+    const me = users.find(u=>u.username===username);
+    if(!me) return;
+    me.avatar = data;
+    saveUsers(users);
+    renderNav();
+  }
+  reader.readAsDataURL(f);
+});
+
+/* Save user info */
+saveUserInfoBtn.addEventListener('click', ()=>{
+  const username = localStorage.getItem('username');
+  if(!username){ alert('Bạn cần đăng nhập để lưu thông tin'); return; }
+  const users = getUsers();
+  const me = users.find(u=>u.username === username);
+  if(!me) return;
+  me.dob = infoDOB.value;
+  me.email = infoEmail.value.trim();
+  me.desc = infoDesc.value.trim();
+  saveUsers(users);
+  alert('Đã lưu thông tin cá nhân');
+  renderNav();
+});
+
+/* ---------- Friends / Invites logic ---------- */
+/* invites stored globally as array of {to, fromName, fromId, fromAvatar} */
+function renderInvitesForUser(username){
+  const invites = getInvites().filter(i=>i.to === username);
+  if(!invites.length){
+    friendInvitesBox.innerHTML = '<div style="color:var(--muted)">📭 Hộp thư trống</div>';
+    friendInvitesBox.style.display='block';
+    return;
+  }
+  friendInvitesBox.style.display='block';
+  friendInvitesBox.innerHTML = '';
+  invites.forEach((inv, idx)=>{
+    const row = document.createElement('div');
+    row.className = 'invite-row';
+    row.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px">
+        <img src="${inv.fromAvatar||DEFAULT_AVATAR}" style="width:40px;height:40px;border-radius:50%;object-fit:cover">
+        <div><strong>${inv.fromName}</strong><div style="font-size:13px;color:var(--muted)">${inv.fromId||''}</div></div>
+      </div>
+      <div>
+        <button class="accept-btn" data-idx="${idx}" style="margin-right:8px;padding:6px 8px;border-radius:6px;border:0;background:#10b981;color:#fff">[+]</button>
+        <button class="reject-btn" data-idx="${idx}" style="padding:6px 8px;border-radius:6px;border:0;background:#ef4444;color:#fff">Xóa</button>
+      </div>
+    `;
+    friendInvitesBox.appendChild(row);
+  });
+
+  // bind accept/reject
+  friendInvitesBox.querySelectorAll('.accept-btn').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      const idx = parseInt(e.target.getAttribute('data-idx'));
+      let invites = getInvites();
+      // find the actual invite index among filtered invites
+      const allInvites = getInvites();
+      const filtered = allInvites.filter(i=>i.to === localStorage.getItem('username'));
+      const inv = filtered[idx];
+      // remove the first matching invite (match on unique combination)
+      const removeIndex = allInvites.findIndex(x=> x.to===inv.to && x.fromName===inv.fromName && x.fromId===inv.fromId);
+      if(removeIndex > -1) allInvites.splice(removeIndex,1);
+      saveInvites(allInvites);
+  const users = getUsers();
+const currentUser = users.find(u => u.username === localStorage.getItem('username'));
+const otherUser = users.find(u => u.username === inv.fromName);
+
+if(currentUser && otherUser){
+  // thêm bạn vào mình
+  if(!currentUser.friends) currentUser.friends = [];
+  if(!currentUser.friends.find(f => f.name === otherUser.username)){
+    currentUser.friends.push({ 
+      name: otherUser.username,
+      id: otherUser.id,
+      avatar: otherUser.avatar || DEFAULT_AVATAR
+    });
+  }
+
+  // thêm bạn vào người kia
+  if(!otherUser.friends) otherUser.friends = [];
+  if(!otherUser.friends.find(f => f.name === currentUser.username)){
+    otherUser.friends.push({
+      name: currentUser.username,
+      id: currentUser.id,
+      avatar: currentUser.avatar || DEFAULT_AVATAR
+    });
+  }
+
+  saveUsers(users);
+}
+
+renderInvitesForUser(currentUser.username);
+renderFriendsForUser(currentUser);
+renderNav();
+
+    });
+  });
+
+  friendInvitesBox.querySelectorAll('.reject-btn').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      const idx = parseInt(e.target.getAttribute('data-idx'));
+      const all = getInvites();
+      const filtered = all.filter(i=>i.to === localStorage.getItem('username'));
+      const inv = filtered[idx];
+      const removeIndex = all.findIndex(x=> x.to===inv.to && x.fromName===inv.fromName && x.fromId===inv.fromId);
+      if(removeIndex > -1) all.splice(removeIndex,1);
+      saveInvites(all);
+      renderInvitesForUser(localStorage.getItem('username'));
+    });
+  });
+}
+
+/* render friends list for given user object */
+function renderFriendsForUser(userObj){
+  friendListArea.innerHTML = '';
+  const arr = userObj.friends || [];
+  if(!arr.length){
+    friendListArea.innerHTML = '<div style="color:var(--muted)">Chưa có bạn bè nào.</div>';
+    return;
+  }
+  arr.forEach(f=>{
+    const el = document.createElement('div');
+    el.className = 'friend-item';
+    el.innerHTML = `<div style="display:flex;align-items:center;gap:10px"><img src="${f.avatar||DEFAULT_AVATAR}"><div><strong>${f.name}</strong><div style="font-size:13px;color:var(--muted)">${f.id||''}</div></div></div><div><button class="unfriend" data-name="${f.name}" style="border:0;background:#ef4444;color:#fff;padding:6px 8px;border-radius:6px">❌</button></div>`;
+    friendListArea.appendChild(el);
+  });
+
+  // bind unfriend
+  friendListArea.querySelectorAll('.unfriend').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      const name = e.target.getAttribute('data-name');
+      const users = getUsers();
+      const me = users.find(u=>u.username === localStorage.getItem('username'));
+      if(!me) return;
+      me.friends = (me.friends||[]).filter(x=> x.name !== name);
+      saveUsers(users);
+      renderFriendsForUser(me);
+    });
+  });
+}
+
+/* ---------- Search (fix: cannot find self) ---------- */
+friendSearchBtn.addEventListener('click', ()=>{
+  const keyword = (friendSearchSidebar.value||'').trim();
+  if(!keyword) return alert('Nhập tên hoặc ID để tìm');
+  const users = getUsers();
+  const current = localStorage.getItem('username') || null;
+  const found = users.find(u => (u.username.toLowerCase() === keyword.toLowerCase() || (u.id && u.id.toLowerCase() === keyword.toLowerCase())) && u.username !== current);
+  if(!found){
+    alert('Người dùng không tồn tại hoặc bạn đang tìm chính bạn.');
+    return;
+  }
+  // show mini card with option send invite
+  showFoundUserMini(found);
+});
+
+function showFoundUserMini(user){
+  // small modal-like card inserted into friendInvitesBox temporarily
+  const box = friendInvitesBox;
+  box.style.display='block';
+  box.innerHTML = `<div class="invite-row">
+    <div style="display:flex;align-items:center;gap:10px">
+      <img src="${user.avatar||DEFAULT_AVATAR}" style="width:48px;height:48px;border-radius:50%;object-fit:cover">
+      <div><strong>${user.username}</strong><div style="font-size:13px;color:var(--muted)">${user.id}</div></div>
+    </div>
+    <div>
+      <button id="sendInviteBtn" style="padding:6px 8px;border-radius:6px;border:0;background:#1a73e8;color:#fff">Gửi lời mời</button>
+    </div>
+  </div>`;
+document.getElementById('sendInviteBtn').addEventListener('click', ()=>{
+  const current = localStorage.getItem('username') || null;
+  if(!current) return alert('Bạn phải đăng nhập để kết bạn.');
+
+  const users = getUsers();
+  const me = users.find(u=>u.username===current);
+  if(!me) return;
+
+  // ✅ 1) Không gửi lời mời cho người đã là bạn
+  if(me.friends && me.friends.some(f => f.name === user.username)){
+    return alert('Người này đã là bạn bè của bạn.');
+  }
+
+  let invites = getInvites();
+
+  // ✅ 2) Không gửi trùng lời mời
+  if(invites.some(i => i.to === user.username && i.fromName === current)){
+    return alert('Bạn đã gửi lời mời cho người này rồi.');
+  }
+
+  // ✅ 3) Tạo lời mời mới
+  invites.push({
+    to: user.username,
+    fromName: current,
+    fromId: me.id,
+    fromAvatar: me.avatar || DEFAULT_AVATAR
+  });
+
+  saveInvites(invites);
+  alert('Đã gửi lời mời kết bạn.');
+});
+
+}
+
+/* ---------- Init ---------- */
+function init(){
+  // render nav based on login
+  renderNav();
+
+  // bind click outside to close panel
+  document.addEventListener('click', (e)=>{
+    const backdrops = document.querySelectorAll('.modal-backdrop');
+    backdrops.forEach(b=>{
+      // nothing here
+    });
+  });
+
+  // show sidebar placeholder when not logged in
+  // attach mail button toggle
+  friendMailBtn.addEventListener('click', ()=>{
+    const u = localStorage.getItem('username');
+    if(!u){ alert('Bạn cần đăng nhập để xem hộp thư.'); return; }
+    // toggle invites box
+    friendInvitesBox.style.display = friendInvitesBox.style.display === 'block' ? 'none' : 'block';
+    renderInvitesForUser(u);
+  });
+
+  // if logged in open panel automatically? no — keep manual
+}
+init();
+
 </script>
 </body>
 </html>
-
-  
-</body>
-</html>
-
