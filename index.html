@@ -569,15 +569,38 @@ function showFoundUserMini(user){
       <button id="sendInviteBtn" style="padding:6px 8px;border-radius:6px;border:0;background:#1a73e8;color:#fff">Gửi lời mời</button>
     </div>
   </div>`;
-  document.getElementById('sendInviteBtn').addEventListener('click', ()=>{
-    const current = localStorage.getItem('username') || 'Khách';
-    const users = getUsers();
-    const me = users.find(u=>u.username===current);
-    const invites = getInvites();
-    invites.push({ to: user.username, fromName: current, fromId: me?me.id:'', fromAvatar: me? (me.avatar||DEFAULT_AVATAR) : DEFAULT_AVATAR });
-    saveInvites(invites);
-    alert('Đã gửi lời mời (demo).');
+document.getElementById('sendInviteBtn').addEventListener('click', ()=>{
+  const current = localStorage.getItem('username') || null;
+  if(!current) return alert('Bạn phải đăng nhập để kết bạn.');
+
+  const users = getUsers();
+  const me = users.find(u=>u.username===current);
+  if(!me) return;
+
+  // ✅ 1) Không gửi lời mời cho người đã là bạn
+  if(me.friends && me.friends.some(f => f.name === user.username)){
+    return alert('Người này đã là bạn bè của bạn.');
+  }
+
+  let invites = getInvites();
+
+  // ✅ 2) Không gửi trùng lời mời
+  if(invites.some(i => i.to === user.username && i.fromName === current)){
+    return alert('Bạn đã gửi lời mời cho người này rồi.');
+  }
+
+  // ✅ 3) Tạo lời mời mới
+  invites.push({
+    to: user.username,
+    fromName: current,
+    fromId: me.id,
+    fromAvatar: me.avatar || DEFAULT_AVATAR
   });
+
+  saveInvites(invites);
+  alert('Đã gửi lời mời kết bạn.');
+});
+
 }
 
 /* ---------- Init ---------- */
