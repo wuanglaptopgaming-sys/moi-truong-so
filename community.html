@@ -119,6 +119,51 @@ header nav a:hover{color:var(--accent);}
   display:none;align-items:center;justify-content:center;
 }
 #imgView img{max-width:90%;max-height:90%;border-radius:12px;}
+
+
+.post-header{
+  display:flex;align-items:center;gap:10px;margin-bottom:8px;
+}
+.avatar{
+  width:45px;height:45px;border-radius:50%;object-fit:cover;
+}
+.avatar-small{
+  width:28px;height:28px;border-radius:50%;object-fit:cover;
+}
+.post-img, .comment-img{
+  max-width:100%;
+  border-radius:12px;
+  margin-top:8px;
+  cursor:pointer;
+}
+.post-img{
+  max-height:280px;
+  object-fit:cover;
+}
+.post-actions{
+  margin-top:6px;
+}
+.comment{
+  display:flex;gap:8px;margin-top:10px;
+}
+.comment-content{
+  background:#f3f6ff;
+  border-radius:10px;
+  padding:6px 10px;
+  flex:1;
+}
+.comment-img{
+  max-width:150px;
+  border-radius:8px;
+}
+.delete-post, .delete-cmt{
+  border:none;background:none;color:red;cursor:pointer;
+}
+.like-cmt{
+  border:none;background:none;cursor:pointer;margin-top:4px;
+}
+
+
 </style>
 </head>
 <body>
@@ -203,21 +248,63 @@ document.getElementById("postBtn").onclick = ()=>{
 };
 
 // render bài đăng
+
+
 function render(){
   const posts = getPosts();
   const container = document.getElementById("postList");
   container.innerHTML = "";
 
-  posts.forEach((p,i)=>{
-    container.innerHTML += `
-    <div class="post">
-      <div class="post-header">
-        <img src="${p.avatar}">
-        <div>
-          <b>${p.user}</b>
-          <div class="post-time">${p.time}</div>
+  container.innerHTML += `
+<div class="post">
+  <div class="post-header">
+    <img class="avatar" src="${p.avatar}">
+    <div>
+      <b>${p.user}</b>
+      <span class="post-time">${p.time}</span>
+    </div>
+
+    <!-- Nút xóa bài -->
+    <button class="delete-post" onclick="deletePost(${i})">🗑️</button>
+  </div>
+
+  <p>${p.text || ""}</p>
+
+  ${p.img ? `<img class="post-img" src="${p.img}" onclick="viewImg('${p.img}')">` : ""}
+
+  <div class="post-actions">
+    <button onclick="toggleLike(${i})">❤️ ${p.likes || 0}</button>
+  </div>
+
+  <div class="comment-box">
+    <input placeholder="Viết bình luận..." id="cmt-${i}">
+    <button onclick="addComment(${i})">Gửi</button>
+
+    <label class="upload-comment-img">
+      📷<input type="file" accept="image/*" onchange="addCommentImg(${i}, this)">
+    </label>
+  </div>
+
+  <div class="comments">
+    ${p.comments.map((c, ci)=>`
+      <div class="comment">
+        <img class="avatar-small" src="${c.avatar}">
+        <div class="comment-content">
+          <b>${c.user}</b> <span class="comment-time">${c.time}</span>
+          <div>${c.text || ""}</div>
+
+          ${c.img ? `<img class="comment-img" src="${c.img}" onclick="viewImg('${c.img}')">` : ""}
+
+          <button class="like-cmt" onclick="likeComment(${i},${ci})">👍 ${c.likes || 0}</button>
+
+          <button class="delete-cmt" onclick="deleteComment(${i},${ci})">✖</button>
         </div>
       </div>
+    `).join("")}
+  </div>
+</div>
+`;
+
 
       <p>${p.text || ""}</p>
 
@@ -276,6 +363,62 @@ function viewImg(src){
   box.querySelector("img").src = src;
 }
 document.getElementById("imgView").onclick = ()=> document.getElementById("imgView").style.display="none";
+
+
+function deletePost(i){
+  const user = getCurrentUser();
+  const posts = getPosts();
+  if(!user || posts[i].user !== user.username) return alert("Bạn chỉ có thể xóa bài của chính mình.");
+  posts.splice(i,1);
+  savePosts(posts);
+  render();
+}
+
+function deleteComment(pi, ci){
+  const user = getCurrentUser();
+  const posts = getPosts();
+  if(!user || posts[pi].comments[ci].user !== user.username) return alert("Bạn chỉ có thể xóa bình luận của mình.");
+  posts[pi].comments.splice(ci,1);
+  savePosts(posts);
+  render();
+}
+
+function toggleLike(i){
+  const posts = getPosts();
+  posts[i].likes = (posts[i].likes || 0) + 1;
+  savePosts(posts);
+  render();
+}
+
+function likeComment(pi,ci){
+  const posts = getPosts();
+  posts[pi].comments[ci].likes = (posts[pi].comments[ci].likes || 0) + 1;
+  savePosts(posts);
+  render();
+}
+
+function addCommentImg(i,input){
+  const user = getCurrentUser();
+  if(!user) return alert("Bạn cần đăng nhập.");
+
+  const file = input.files[0];
+  const reader = new FileReader();
+  reader.onload = function(e){
+    const posts = getPosts();
+    posts[i].comments.push({
+      user:user.username,
+      avatar:user.avatar,
+      img:e.target.result,
+      text:"",
+      time:new Date().toLocaleString(),
+      likes:0
+    });
+    savePosts(posts);
+    render();
+  }
+  reader.readAsDataURL(file);
+}
+
 
 render();
 </script>
