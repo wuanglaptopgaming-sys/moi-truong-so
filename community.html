@@ -255,55 +255,49 @@ function render(){
   const container = document.getElementById("postList");
   container.innerHTML = "";
 
-  container.innerHTML += `
-<div class="post">
-  <div class="post-header">
-    <img class="avatar" src="${p.avatar}">
-    <div>
-      <b>${p.user}</b>
-      <span class="post-time">${p.time}</span>
-    </div>
-
-    <!-- Nút xóa bài -->
-    <button class="delete-post" onclick="deletePost(${i})">🗑️</button>
-  </div>
-
-  <p>${p.text || ""}</p>
-
-  ${p.img ? `<img class="post-img" src="${p.img}" onclick="viewImg('${p.img}')">` : ""}
-
-  <div class="post-actions">
-    <button onclick="toggleLike(${i})">❤️ ${p.likes || 0}</button>
-  </div>
-
-  <div class="comment-box">
-    <input placeholder="Viết bình luận..." id="cmt-${i}">
-    <button onclick="addComment(${i})">Gửi</button>
-
-    <label class="upload-comment-img">
-      📷<input type="file" accept="image/*" onchange="addCommentImg(${i}, this)">
-    </label>
-  </div>
-
-  <div class="comments">
-    ${p.comments.map((c, ci)=>`
-      <div class="comment">
-        <img class="avatar-small" src="${c.avatar}">
-        <div class="comment-content">
-          <b>${c.user}</b> <span class="comment-time">${c.time}</span>
-          <div>${c.text || ""}</div>
-
-          ${c.img ? `<img class="comment-img" src="${c.img}" onclick="viewImg('${c.img}')">` : ""}
-
-          <button class="like-cmt" onclick="likeComment(${i},${ci})">👍 ${c.likes || 0}</button>
-
-          <button class="delete-cmt" onclick="deleteComment(${i},${ci})">✖</button>
+  posts.forEach((p,i)=>{
+    container.innerHTML += `
+    <div class="post">
+      <div class="post-header">
+        <img class="avatar" src="${p.avatar}">
+        <div>
+          <b>${p.user}</b>
+          <span class="post-time">${p.time}</span>
         </div>
+        <button class="delete-post" onclick="deletePost(${i})">🗑️</button>
       </div>
-    `).join("")}
-  </div>
-</div>
-`;
+
+      <p>${p.text || ""}</p>
+      ${p.img ? `<img class="post-img" src="${p.img}" onclick="viewImg('${p.img}')">` : ""}
+
+      <div class="post-actions">
+        <button onclick="toggleLike(${i})">❤️ ${p.likes || 0}</button>
+      </div>
+
+      <div class="comment-box">
+        <input placeholder="Viết bình luận..." id="cmt-${i}">
+        <button onclick="addComment(${i})">Gửi</button>
+        <label style="cursor:pointer;">📷<input type="file" accept="image/*" style="display:none" onchange="addCommentImg(${i},this)"></label>
+      </div>
+
+      <div class="comments">
+        ${p.comments.map((c, ci)=>`
+          <div class="comment">
+            <img class="avatar-small" src="${c.avatar}">
+            <div class="comment-content">
+              <b>${c.user}</b> <span class="comment-time">${c.time}</span>
+              <div>${c.text || ""}</div>
+              ${c.img ? `<img class="comment-img" src="${c.img}" onclick="viewImg('${c.img}')">` : ""}
+              <button class="like-cmt" onclick="likeComment(${i},${ci})">👍 ${c.likes || 0}</button>
+              <button class="delete-cmt" onclick="deleteComment(${i},${ci})">✖</button>
+            </div>
+          </div>
+        `).join("")}
+      </div>
+    </div>`;
+  });
+}
+
 
 
       <p>${p.text || ""}</p>
