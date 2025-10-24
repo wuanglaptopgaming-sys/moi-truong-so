@@ -264,15 +264,6 @@ function showUserPopup(username){
   }
 }
 
-// Cuộn tới bài được chọn từ trang chủ
-const targetIndex = localStorage.getItem("scrollToPostIndex");
-if(targetIndex !== null){
-  setTimeout(()=>{
-    const postEls = document.querySelectorAll(".post");
-    if(postEls[targetIndex]) postEls[targetIndex].scrollIntoView({behavior:"smooth"});
-    localStorage.removeItem("scrollToPostIndex");
-  }, 400);
-}
 
   
 render();
@@ -280,4 +271,5 @@ render();
 
 </body>
 </html>
+
 
