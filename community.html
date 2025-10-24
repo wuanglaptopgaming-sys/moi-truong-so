@@ -89,39 +89,36 @@ header nav a:hover{color:var(--accent);}
 <div id="imgView"><img></div>
 
 <script>
-// ====== Storage & Helpers ======
 const DEFAULT_AVATAR = "https://i.imgur.com/PHv4T6B.png";
 function getUsers(){return JSON.parse(localStorage.getItem("users")||"[]");}
 function getPosts(){return JSON.parse(localStorage.getItem("posts")||"[]");}
 function savePosts(p){localStorage.setItem("posts",JSON.stringify(p));}
+function getInvites(){return JSON.parse(localStorage.getItem("invites")||"[]");}
+function saveInvites(p){localStorage.setItem("invites",JSON.stringify(p));}
 function now(){return new Date().toLocaleString("vi-VN",{hour:"2-digit",minute:"2-digit",day:"2-digit",month:"2-digit"});}
-
-// lấy user đang đăng nhập
 function getCurrentUser(){
-  const username = localStorage.getItem("username");
-  if(!username) return null;
-  const users = getUsers();
-  return users.find(u=>u.username===username) || null;
+  const name=localStorage.getItem("username");
+  if(!name)return null;
+  return getUsers().find(u=>u.username===name)||null;
 }
 
 // ====== Đăng bài ======
-document.getElementById("postBtn").onclick = ()=>{
-  const user = getCurrentUser();
+document.getElementById("postBtn").onclick=()=>{
+  const user=getCurrentUser();
   if(!user){alert("Bạn chưa đăng nhập!");return;}
-  const text = document.getElementById("postText").value.trim();
-  const file = document.getElementById("postImg").files[0];
-  if(!text && !file) return;
-
-  const reader = new FileReader();
-  reader.onload = e=>{
-    const posts = getPosts();
+  const text=document.getElementById("postText").value.trim();
+  const file=document.getElementById("postImg").files[0];
+  if(!text && !file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const posts=getPosts();
     posts.unshift({
       user:user.username,
-      avatar:user.avatar || DEFAULT_AVATAR,
+      avatar:user.avatar||DEFAULT_AVATAR,
       text,
       img:e.target.result||"",
       time:now(),
-      likes:0,
+      likes:[],
       comments:[]
     });
     savePosts(posts);
@@ -129,62 +126,60 @@ document.getElementById("postBtn").onclick = ()=>{
     document.getElementById("postImg").value="";
     render();
   };
-  if(file) reader.readAsDataURL(file); else reader.onload({target:{result:""}});
+  if(file)reader.readAsDataURL(file); else reader.onload({target:{result:""}});
 };
 
-// ====== Render ======
+// ====== Hiển thị bài ======
 function render(){
-  const posts = getPosts();
-  const container = document.getElementById("postList");
+  const posts=getPosts();
+  const container=document.getElementById("postList");
   container.innerHTML="";
+  const me=getCurrentUser();
   posts.forEach((p,i)=>{
-    container.innerHTML += `
-      <div class="post">
-        <div class="post-header">
-          <img class="avatar" src="${p.avatar||DEFAULT_AVATAR}">
-          <div><b>${p.user}</b><div class="post-time">${p.time}</div></div>
-          <button class="delete-post" onclick="deletePost(${i})">🗑️</button>
-        </div>
-        <p>${p.text||""}</p>
-        ${p.img?`<img class="post-img" src="${p.img}" onclick="viewImg('${p.img}')">`:""}
-        <div class="post-actions">
-          <button onclick="toggleLike(${i})">❤️ ${p.likes||0}</button>
-        </div>
-        <div class="comment-box">
-          <input id="cmt-${i}" placeholder="Viết bình luận...">
-          <button onclick="addComment(${i})">Gửi</button>
-          <label style="cursor:pointer;">📷<input type="file" accept="image/*" style="display:none" onchange="addCommentImg(${i},this)"></label>
-        </div>
-        <div class="comments">
-          ${p.comments.map((c,ci)=>`
-            <div class="comment">
-              <img class="avatar-small" src="${c.avatar||DEFAULT_AVATAR}">
-              <div class="comment-content">
-                <b>${c.user}</b> <span class="comment-time">${c.time}</span>
-                <div>${c.text||""}</div>
-                ${c.img?`<img class="comment-img" src="${c.img}" onclick="viewImg('${c.img}')">`:""}
-                <button class="like-cmt" onclick="likeComment(${i},${ci})">👍 ${c.likes||0}</button>
-                <button class="delete-cmt" onclick="deleteComment(${i},${ci})">✖</button>
-              </div>
-            </div>`).join("")}
-        </div>
-      </div>`;
+    const liked = me && p.likes && p.likes.includes(me.username);
+    container.innerHTML+=`
+    <div class="post">
+      <div class="post-header">
+        <img class="avatar" src="${p.avatar||DEFAULT_AVATAR}" onclick="showUserPopup('${p.user}')">
+        <div><b>${p.user}</b><div class="post-time">${p.time}</div></div>
+        <button class="delete-post" onclick="deletePost(${i})">🗑️</button>
+      </div>
+      <p>${p.text||""}</p>
+      ${p.img?`<img class="post-img" src="${p.img}" onclick="viewImg('${p.img}')">`:""}
+      <div class="post-actions">
+        <button onclick="toggleLike(${i})">${liked?"💙":"🤍"} ${p.likes?p.likes.length:0}</button>
+      </div>
+      <div class="comment-box">
+        <input id="cmt-${i}" placeholder="Viết bình luận...">
+        <button onclick="addComment(${i})">Gửi</button>
+        <label style="cursor:pointer;">📷<input type="file" accept="image/*" style="display:none" onchange="addCommentImg(${i},this)"></label>
+      </div>
+      <div class="comments">
+        ${p.comments.map((c,ci)=>`
+          <div class="comment">
+            <img class="avatar-small" src="${c.avatar||DEFAULT_AVATAR}" onclick="showUserPopup('${c.user}')">
+            <div class="comment-content">
+              <b>${c.user}</b> <span class="comment-time">${c.time}</span>
+              <div>${c.text||""}</div>
+              ${c.img?`<img class="comment-img" src="${c.img}" onclick="viewImg('${c.img}')">`:""}
+              <button class="like-cmt" onclick="likeComment(${i},${ci})">👍 ${c.likes||0}</button>
+              <button class="delete-cmt" onclick="deleteComment(${i},${ci})">✖</button>
+            </div>
+          </div>`).join("")}
+      </div>
+    </div>`;
   });
 }
 
-// ====== Các hành động ======
-function viewImg(src){
-  const box=document.getElementById("imgView");
-  box.style.display="flex";
-  box.querySelector("img").src=src;
-}
-document.getElementById("imgView").onclick=()=>document.getElementById("imgView").style.display="none";
-
-function deletePost(i){
+// ====== Hành động ======
+function toggleLike(i){
   const user=getCurrentUser();
+  if(!user)return alert("Bạn chưa đăng nhập!");
   const posts=getPosts();
-  if(!user||posts[i].user!==user.username)return alert("Bạn chỉ có thể xóa bài của mình.");
-  posts.splice(i,1);savePosts(posts);render();
+  const likes=posts[i].likes||[];
+  const idx=likes.indexOf(user.username);
+  if(idx===-1)likes.push(user.username); else likes.splice(idx,1);
+  posts[i].likes=likes; savePosts(posts); render();
 }
 function addComment(i){
   const user=getCurrentUser();
@@ -207,20 +202,68 @@ function addCommentImg(i,input){
   };
   reader.readAsDataURL(file);
 }
+function deletePost(i){
+  const user=getCurrentUser();const posts=getPosts();
+  if(!user||posts[i].user!==user.username)return alert("Bạn chỉ có thể xóa bài của mình.");
+  posts.splice(i,1);savePosts(posts);render();
+}
 function deleteComment(pi,ci){
-  const user=getCurrentUser();
-  const posts=getPosts();
+  const user=getCurrentUser();const posts=getPosts();
   if(!user||posts[pi].comments[ci].user!==user.username)return alert("Bạn chỉ có thể xóa bình luận của mình.");
   posts[pi].comments.splice(ci,1);savePosts(posts);render();
 }
-function toggleLike(i){
-  const posts=getPosts();posts[i].likes=(posts[i].likes||0)+1;savePosts(posts);render();
-}
 function likeComment(pi,ci){
-  const posts=getPosts();posts[pi].comments[ci].likes=(posts[pi].comments[ci].likes||0)+1;savePosts(posts);render();
+  const posts=getPosts();
+  posts[pi].comments[ci].likes=(posts[pi].comments[ci].likes||0)+1;
+  savePosts(posts);render();
+}
+function viewImg(src){
+  const box=document.getElementById("imgView");
+  box.style.display="flex";
+  box.querySelector("img").src=src;
+}
+document.getElementById("imgView").onclick=()=>document.getElementById("imgView").style.display="none";
+
+// ====== Popup người dùng ======
+function showUserPopup(username){
+  const user=getUsers().find(u=>u.username===username);
+  if(!user)return alert("Không tìm thấy người dùng.");
+  const me=getCurrentUser();
+  const box=document.createElement("div");
+  box.style.position="fixed";
+  box.style.inset="0";
+  box.style.background="rgba(0,0,0,0.5)";
+  box.style.display="flex";
+  box.style.alignItems="center";
+  box.style.justifyContent="center";
+  box.innerHTML=`
+    <div style="background:white;border-radius:12px;padding:20px;width:300px;box-shadow:0 6px 20px rgba(0,0,0,0.3);text-align:center;">
+      <img src="${user.avatar||DEFAULT_AVATAR}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;">
+      <h3>${user.username}</h3>
+      <p style="font-size:14px;color:#555;">ID: ${user.id||'(Ẩn)'}</p>
+      <p style="font-size:13px;color:#777;">${user.desc||'Không có mô tả.'}</p>
+      ${me && me.username!==user.username ? `<button id="inviteBtn" style="padding:8px 12px;border:0;background:#0072ff;color:#fff;border-radius:8px;cursor:pointer;">Gửi lời mời kết bạn</button>`:''}
+      <div style="margin-top:10px;"><button id="closePopup" style="border:0;background:#ccc;border-radius:6px;padding:6px 12px;cursor:pointer;">Đóng</button></div>
+    </div>`;
+  document.body.appendChild(box);
+
+  box.querySelector("#closePopup").onclick=()=>box.remove();
+
+  const btn=box.querySelector("#inviteBtn");
+  if(btn){
+    btn.onclick=()=>{
+      const invites=getInvites();
+      if(invites.some(i=>i.to===user.username && i.fromName===me.username)){
+        alert("Bạn đã gửi lời mời rồi!");return;
+      }
+      invites.push({to:user.username,fromName:me.username,fromId:me.id,fromAvatar:me.avatar||DEFAULT_AVATAR});
+      saveInvites(invites);
+      alert("Đã gửi lời mời kết bạn!");
+      box.remove();
+    };
+  }
 }
 
-// ====== Init ======
 render();
 </script>
 
