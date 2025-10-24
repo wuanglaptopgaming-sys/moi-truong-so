@@ -109,7 +109,7 @@
     </div>
   </div>
   <div class="intro-image">
-    <img src="https://cdn.pixabay.com/photo/2017/08/10/03/58/lecture-2619041_1280.jpg" alt="Học tập">
+    <img src="https://cdn0986.cdn4s.com/media/2021/01/truong_hoc_truc_tuyen.jpg" alt="Học tập">
   </div>
 </main>
 
@@ -463,18 +463,38 @@ function renderInvitesForUser(username){
       const removeIndex = allInvites.findIndex(x=> x.to===inv.to && x.fromName===inv.fromName && x.fromId===inv.fromId);
       if(removeIndex > -1) allInvites.splice(removeIndex,1);
       saveInvites(allInvites);
-      // add friend to current user
-      const users = getUsers();
-      const me = users.find(u=>u.username === localStorage.getItem('username'));
-      if(me){
-        if(!me.friends) me.friends = [];
-        // prevent duplicate
-        if(!me.friends.find(f=>f.name === inv.fromName)){
-          me.friends.push({ name: inv.fromName, id: inv.fromId || '', avatar: inv.fromAvatar || DEFAULT_AVATAR });
-        }
-        saveUsers(users);
-      }
-      showUserInfo();
+  const users = getUsers();
+const currentUser = users.find(u => u.username === localStorage.getItem('username'));
+const otherUser = users.find(u => u.username === inv.fromName);
+
+if(currentUser && otherUser){
+  // thêm bạn vào mình
+  if(!currentUser.friends) currentUser.friends = [];
+  if(!currentUser.friends.find(f => f.name === otherUser.username)){
+    currentUser.friends.push({ 
+      name: otherUser.username,
+      id: otherUser.id,
+      avatar: otherUser.avatar || DEFAULT_AVATAR
+    });
+  }
+
+  // thêm bạn vào người kia
+  if(!otherUser.friends) otherUser.friends = [];
+  if(!otherUser.friends.find(f => f.name === currentUser.username)){
+    otherUser.friends.push({
+      name: currentUser.username,
+      id: currentUser.id,
+      avatar: currentUser.avatar || DEFAULT_AVATAR
+    });
+  }
+
+  saveUsers(users);
+}
+
+renderInvitesForUser(currentUser.username);
+renderFriendsForUser(currentUser);
+renderNav();
+
     });
   });
 
