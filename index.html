@@ -30,55 +30,22 @@
   .btn-primary{background:var(--accent);color:#fff}
   .btn-primary:hover{background:#005bd1}
 
-  /* Main intro */
-  .intro-section {
-    width:100%; background: linear-gradient(135deg,#eef5ff,#ffffff);
-    padding:48px 60px; display:flex; gap:36px; align-items:center; box-sizing:border-box;
-  }
+  .intro-section{width:100%;background:linear-gradient(135deg,#eef5ff,#ffffff);padding:48px 60px;display:flex;gap:36px;align-items:center}
   .intro-text{flex:1}
   .intro-text h1{font-size:36px;color:#1a73e8;margin:0 0 8px}
   .intro-text p{color:#444;line-height:1.7;margin:0 0 16px}
-
   .intro-image{flex:1;display:flex;align-items:center;justify-content:center}
-  .intro-image img{width:100%;max-width:520px;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,0.08);transform-origin:center;animation:fadeZoomIn 1s ease}
-  @keyframes fadeZoomIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+  .intro-image img{width:100%;max-width:520px;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,0.08)}
 
-  /* Lower columns */
-  .columns{display:flex;gap:28px;padding:36px 60px;box-sizing:border-box}
-  .card{background:#fff;border-radius:14px;padding:20px;box-shadow:0 6px 18px rgba(2,6,23,0.06);flex:1}
-  .card h3{margin:0 0 12px;font-size:18px}
-
-  /* Sidebar user panel (off-canvas) */
-  #userPanel {
-    position: fixed; top: 0; right: -380px; width: 380px; height: 100%; background: var(--card);
-    border-left: 1px solid #e6eef8; box-shadow: -8px 0 30px rgba(2,6,23,0.08); transition: right .28s ease; z-index:60;
-    display:flex;flex-direction:column;
-  }
-  #userPanel.open { right: 0; }
+  #userPanel{position:fixed;top:0;right:-380px;width:380px;height:100%;background:var(--card);border-left:1px solid #e6eef8;box-shadow:-8px 0 30px rgba(2,6,23,0.08);transition:right .28s ease;z-index:60;display:flex;flex-direction:column}
+  #userPanel.open{right:0}
   #userPanel header{background:var(--accent);color:#fff;padding:14px;display:flex;justify-content:space-between;align-items:center}
-  #userPanel header button{background:transparent;border:0;color:#fff;font-size:20px;cursor:pointer}
   .user-info{padding:16px;overflow-y:auto;flex:1}
-  .user-info label{display:block;margin-top:10px;font-weight:700;color:#233}
-  .user-info input[type="text"], .user-info input[type="email"], .user-info textarea{width:100%;padding:8px;border-radius:8px;border:1px solid #e6eef8}
-  .save-btn{margin-top:12px;background:var(--accent);color:#fff;border:0;padding:10px 14px;border-radius:8px;cursor:pointer}
-
-  /* avatar */
   .avatar-area{text-align:center;margin-bottom:8px}
-  .avatar-area img{width:110px;height:110px;border-radius:50%;object-fit:cover;border:4px solid transparent;background:linear-gradient(white,white) padding-box, linear-gradient(135deg,#6ce0ff,#5d74ff) border-box}
-  .avatar-area .small-note{font-size:13px;color:var(--muted);margin-top:6px}
-
-  /* friend section */
+  .avatar-area img{width:110px;height:110px;border-radius:50%;object-fit:cover;border:4px solid transparent;background:linear-gradient(white,white) padding-box,linear-gradient(135deg,#6ce0ff,#5d74ff) border-box}
   .friend-section{padding:12px;border-top:1px solid #eef5ff}
-  .friend-actions{display:flex;gap:8px;align-items:center}
-  .friend-actions input{flex:1;padding:8px;border-radius:8px;border:1px solid #e6eef8}
-  .friend-actions button{padding:8px 10px;border-radius:8px;border:0;background:var(--accent);color:#fff;cursor:pointer}
-  .friend-list{margin-top:12px}
   .friend-item{display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px;background:#f8fafc;margin-bottom:8px}
-  .friend-item img{width:40px;height:40px;border-radius:50%;object-fit:cover}
   .invite-row{display:flex;justify-content:space-between;align-items:center;padding:8px;margin-bottom:8px;border-radius:8px;background:#f8fafc}
-
-  /* small responsive */
-  @media(max-width:880px){ .intro-section{flex-direction:column;padding:28px} .columns{flex-direction:column;padding:24px} #userPanel{width:100%;} }
 </style>
 </head>
 <body>
@@ -91,265 +58,159 @@
       <p>Học — Chia sẻ — Kết nối</p>
     </div>
   </div>
-
   <nav id="nav">
     <a href="community.html">Cộng đồng</a>
-<a href="groups.html">Nhóm học tập</a>
-
+    <a href="groups.html">Nhóm học tập</a>
     <button id="btn-signup">Đăng ký</button>
     <button id="btn-login" class="btn-primary">Đăng nhập</button>
   </nav>
 </header>
 
-<!-- Intro -->
 <main class="intro-section">
   <div class="intro-text">
     <h1>🎓 Môi Trường Số Học Tập</h1>
-    <p>Không gian dành cho sinh viên để chia sẻ bài tập, hỏi đáp, kết nối và cùng nhau tiến bộ. Tham gia cộng đồng, đăng bài và kết bạn ngay!</p>
-    <div style="margin-top:18px">
-      <a href="community.html" style="text-decoration:none"><button style="padding:10px 18px;border-radius:30px;border:0;background:var(--accent);color:#fff;cursor:pointer">Vào cộng đồng</button></a>
-    </div>
+    <p>Không gian dành cho sinh viên để chia sẻ bài tập, hỏi đáp, kết nối và cùng nhau tiến bộ.</p>
+    <a href="community.html"><button style="padding:10px 18px;border-radius:30px;border:0;background:var(--accent);color:#fff">Vào cộng đồng</button></a>
   </div>
-  <div class="intro-image">
-    <img src="https://cdn0986.cdn4s.com/media/2021/01/truong_hoc_truc_tuyen.jpg" alt="Học tập">
-  </div>
+  <div class="intro-image"><img src="https://cdn0986.cdn4s.com/media/2021/01/truong_hoc_truc_tuyen.jpg" alt=""></div>
 </main>
 
-
-<!-- User Panel (off-canvas right) -->
-<div id="userPanel" aria-hidden="true">
-  <header>
-    <span>Thông tin người dùng</span>
-    <button id="closeUserPanel" aria-label="Đóng">&times;</button>
-  </header>
-
+<!-- Bảng thông tin người dùng -->
+<div id="userPanel">
+  <header><span>Thông tin người dùng</span><button id="closeUserPanel">&times;</button></header>
   <div class="user-info">
     <div class="avatar-area">
-      <img id="avatarPreview" alt="Avatar">
-      <div class="small-note">Ảnh đại diện</div>
+      <img id="avatarPreview" alt="avatar">
       <input id="infoAvatar" type="file" accept="image/*" style="display:none">
-      <div style="margin-top:8px">
-        <button id="changeAvatarBtn" style="padding:8px 10px;border-radius:8px;border:0;background:#eee;cursor:pointer">Đổi ảnh</button>
-      </div>
+      <button id="changeAvatarBtn">Đổi ảnh</button>
     </div>
-
-    <label>Tên người dùng</label>
-    <input id="infoName" type="text" disabled>
-
-    <label>ID</label>
-    <input id="infoID" type="text" disabled>
-
-    <label>Ngày sinh</label>
-    <input id="infoDOB" type="date">
-
-    <label>Email</label>
-    <input id="infoEmail" type="email" placeholder="you@example.com">
-
-    <label>Mô tả</label>
-    <textarea id="infoDesc" placeholder="Giới thiệu về bản thân..."></textarea>
-
-    <button id="saveUserInfo" class="save-btn">Lưu thông tin</button>
+    <label>Tên</label><input id="infoName" type="text" disabled>
+    <label>ID</label><input id="infoID" type="text" disabled>
+    <label>Ngày sinh</label><input id="infoDOB" type="date">
+    <label>Email</label><input id="infoEmail" type="email">
+    <label>Mô tả</label><textarea id="infoDesc"></textarea>
+    <button id="saveUserInfo">Lưu</button>
 
     <div class="friend-section">
-      <h4 style="margin:0 0 8px">Kết bạn</h4>
-      <div class="friend-actions">
-        <input id="friendSearchSidebar" placeholder="Tìm theo tên hoặc ID...">
-        <button id="friendSearchBtn">Tìm</button>
-        <button id="friendMailBtn" title="Hộp thư lời mời" style="width:40px;border-radius:8px;background:var(--accent);color:#fff;border:0">📩</button>
-      </div>
-
-      <div id="friendInvites" style="display:none;margin-top:10px">
-        <!-- invites inserted here -->
-      </div>
-
-      <div class="friend-list" id="friendListArea" style="margin-top:10px">
-        <!-- friends inserted here -->
-      </div>
+      <input id="friendSearchSidebar" placeholder="Tìm bạn...">
+      <button id="friendSearchBtn">Tìm</button>
+      <button id="friendMailBtn">📩</button>
+      <div id="friendInvites" style="display:none"></div>
+      <div id="friendListArea"></div>
     </div>
   </div>
 </div>
 
-<!-- Login Modal -->
-<div id="modalLogin" style="display:none" aria-hidden="true">
-  <div class="modal-backdrop" role="dialog" aria-modal="true" style="position:fixed;inset:0;background:rgba(2,6,23,0.45);display:flex;align-items:center;justify-content:center;z-index:70">
-    <div class="modal" role="document" style="width:100%;max-width:420px;background:var(--card);border-radius:12px;padding:18px;box-shadow:0 12px 40px rgba(2,6,23,0.2)">
+<!-- Modal đăng nhập / đăng ký -->
+<div id="modalLogin" style="display:none">
+  <div style="position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center">
+    <div style="background:white;padding:20px;border-radius:10px;max-width:400px;width:100%">
       <h3>Đăng nhập</h3>
-      <div class="form-group"><label for="loginUser">Tên đăng nhập</label><input id="loginUser" type="text" placeholder="Tên đăng nhập"></div>
-      <div class="form-group"><label for="loginPass">Mật khẩu</label><input id="loginPass" type="password" placeholder="Mật khẩu"></div>
-      <div id="loginError" style="color:#b91c1c;display:none;margin-top:8px"></div>
-      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
-        <button class="link" id="toSignupFromLogin">Chưa có tài khoản?</button>
-        <button id="closeLogin" class="link">Hủy</button>
-        <button id="submitLogin" class="btn-primary">Đăng nhập</button>
-      </div>
+      <input id="loginUser" placeholder="Tên đăng nhập"><br>
+      <input id="loginPass" type="password" placeholder="Mật khẩu"><br>
+      <div id="loginError" style="color:red;display:none"></div>
+      <button id="submitLogin">Đăng nhập</button>
+      <button id="toSignupFromLogin">Chưa có tài khoản?</button>
+      <button id="closeLogin">Đóng</button>
     </div>
   </div>
 </div>
 
-<!-- Signup Modal -->
-<div id="modalSignup" style="display:none" aria-hidden="true">
-  <div class="modal-backdrop" role="dialog" aria-modal="true" style="position:fixed;inset:0;background:rgba(2,6,23,0.45);display:flex;align-items:center;justify-content:center;z-index:70">
-    <div class="modal" role="document" style="width:100%;max-width:420px;background:var(--card);border-radius:12px;padding:18px;box-shadow:0 12px 40px rgba(2,6,23,0.2)">
+<div id="modalSignup" style="display:none">
+  <div style="position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center">
+    <div style="background:white;padding:20px;border-radius:10px;max-width:400px;width:100%">
       <h3>Đăng ký</h3>
-      <div class="form-group"><label for="signupUser">Tên đăng nhập</label><input id="signupUser" type="text" placeholder="Tên đăng nhập"></div>
-      <div class="form-group"><label for="signupPass">Mật khẩu</label><input id="signupPass" type="password" placeholder="Mật khẩu (8-16 ký tự)"></div>
-      <div id="signupError" style="color:#b91c1c;display:none;margin-top:8px"></div>
-      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
-        <button class="link" id="toLoginFromSignup">Đã có tài khoản?</button>
-        <button id="closeSignup" class="link">Hủy</button>
-        <button id="submitSignup" class="btn-primary">Đăng ký</button>
-      </div>
+      <input id="signupUser" placeholder="Tên đăng nhập"><br>
+      <input id="signupPass" type="password" placeholder="Mật khẩu"><br>
+      <div id="signupError" style="color:red;display:none"></div>
+      <button id="submitSignup">Đăng ký</button>
+      <button id="toLoginFromSignup">Đã có tài khoản?</button>
+      <button id="closeSignup">Đóng</button>
     </div>
   </div>
 </div>
 
 <script>
-/* ---------- Helpers & storage ---------- */
-const $ = sel => document.querySelector(sel);
-const $$ = sel => document.querySelectorAll(sel);
+const $ = s=>document.querySelector(s);
+function getUsers(){return JSON.parse(localStorage.getItem('users')||'[]');}
+function saveUsers(a){localStorage.setItem('users',JSON.stringify(a));}
+const DEFAULT_AVATAR='https://i.imgur.com/6VBx3io.png';
+const navEl=document.getElementById('nav');
 
-function getUsers(){ return JSON.parse(localStorage.getItem('users')||'[]'); }
-function saveUsers(arr){ localStorage.setItem('users', JSON.stringify(arr)); }
-
-function getInvites(){ return JSON.parse(localStorage.getItem('invites')||'[]'); }
-function saveInvites(arr){ localStorage.setItem('invites', JSON.stringify(arr)); }
-
-/* default cat avatar */
-const DEFAULT_AVATAR = 'https://i.imgur.com/6VBx3io.png';
-
-/* ---------- Elements ---------- */
-const navEl = document.getElementById('nav');
-const btnLogin = document.getElementById('btn-login');
-const btnSignup = document.getElementById('btn-signup');
-const modalLogin = document.getElementById('modalLogin');
-const modalSignup = document.getElementById('modalSignup');
-const closeLogin = document.getElementById('closeLogin');
-const closeSignup = document.getElementById('closeSignup');
-
-const userPanel = document.getElementById('userPanel');
-const closeUserPanel = document.getElementById('closeUserPanel');
-const avatarPreview = document.getElementById('avatarPreview');
-const infoAvatarInput = document.getElementById('infoAvatar');
-const changeAvatarBtn = document.getElementById('changeAvatarBtn');
-const saveUserInfoBtn = document.getElementById('saveUserInfo');
-
-const infoName = document.getElementById('infoName');
-const infoID = document.getElementById('infoID');
-const infoDOB = document.getElementById('infoDOB');
-const infoEmail = document.getElementById('infoEmail');
-const infoDesc = document.getElementById('infoDesc');
-
-const friendSearchSidebar = document.getElementById('friendSearchSidebar');
-const friendSearchBtn = document.getElementById('friendSearchBtn');
-const friendInvitesBox = document.getElementById('friendInvites');
-const friendListArea = document.getElementById('friendListArea');
-const friendMailBtn = document.getElementById('friendMailBtn');
-
-const signupUser = document.getElementById('signupUser');
-const signupPass = document.getElementById('signupPass');
-const signupError = document.getElementById('signupError');
-const submitSignup = document.getElementById('submitSignup');
-
-const loginUser = document.getElementById('loginUser');
-const loginPass = document.getElementById('loginPass');
-const loginError = document.getElementById('loginError');
-const submitLogin = document.getElementById('submitLogin');
-
-/* ---------- UI behavior ---------- */
-changeAvatarBtn.addEventListener('click', ()=> infoAvatarInput.click());
-closeUserPanel.addEventListener('click', ()=> userPanel.classList.remove('open'));
-
-btnLogin.addEventListener('click', ()=> { modalLogin.style.display='block'; modalSignup.style.display='none'; loginError.style.display='none'; });
-btnSignup.addEventListener('click', ()=> { modalSignup.style.display='block'; modalLogin.style.display='none'; signupError.style.display='none'; });
-closeLogin.addEventListener('click', ()=> modalLogin.style.display='none');
-closeSignup.addEventListener('click', ()=> modalSignup.style.display='none');
-document.getElementById('toSignupFromLogin').addEventListener('click', ()=> { modalLogin.style.display='none'; modalSignup.style.display='block'; });
-document.getElementById('toLoginFromSignup').addEventListener('click', ()=> { modalSignup.style.display='none'; modalLogin.style.display='block'; });
-
-/* ---------- Signup / Login ---------- */
-function genUserId(users){ return '#'+(1000 + users.length + 1); }
-
-submitSignup.addEventListener('click', ()=>{
-  signupError.style.display='none';
-  const u = signupUser.value.trim(), p = signupPass.value;
-  if(!u || !p){ signupError.textContent='Vui lòng điền đủ thông tin.'; signupError.style.display='block'; return; }
-  if(p.length<8 || p.length>16){ signupError.textContent='Mật khẩu phải có 8–16 ký tự.'; signupError.style.display='block'; return; }
-  const users=getUsers();
-  if(users.find(x=>x.username.toLowerCase()===u.toLowerCase())){ signupError.textContent='Tên đăng nhập đã tồn tại.'; signupError.style.display='block'; return; }
-  const newUser={username:u,password:p,id:genUserId(users),avatar:null,dob:'',email:'',desc:'',friends:[]};
-  users.push(newUser); saveUsers(users);
-  localStorage.setItem('username',u);
-  modalSignup.style.display='none';
-  renderNav(); showUserInfo();
-});
-
-submitLogin.addEventListener('click', ()=>{
-  loginError.style.display='none';
-  const u=loginUser.value.trim(), p=loginPass.value;
-  if(!u||!p){loginError.textContent='Vui lòng điền đủ thông tin.';loginError.style.display='block';return;}
-  const users=getUsers();
-  const found=users.find(x=>x.username===u&&x.password===p);
-  if(!found){loginError.textContent='Sai tên đăng nhập hoặc mật khẩu.';loginError.style.display='block';return;}
-  localStorage.setItem('username',u);
-  modalLogin.style.display='none';
-  renderNav();
-});
-
-/* ---------- Navigation ---------- */
 function resetNav(){
-  navEl.innerHTML = `
+  navEl.innerHTML=`
     <a href="community.html">Cộng đồng</a>
     <a href="groups.html">Nhóm học tập</a>
     <button id="btn-signup">Đăng ký</button>
-    <button id="btn-login" class="btn-primary">Đăng nhập</button>
-  `;
-  document.getElementById('btn-login').onclick = ()=>{ modalLogin.style.display='block'; };
-  document.getElementById('btn-signup').onclick = ()=>{ modalSignup.style.display='block'; };
+    <button id="btn-login" class="btn-primary">Đăng nhập</button>`;
+  $('#btn-login').onclick=()=>modalLogin.style.display='block';
+  $('#btn-signup').onclick=()=>modalSignup.style.display='block';
 }
 
 function renderNav(){
-  const username = localStorage.getItem('username');
-  if(!username){ resetNav(); return; }
-  const users=getUsers();
-  const me=users.find(u=>u.username===username);
-  const avatar=(me&&me.avatar)?me.avatar:DEFAULT_AVATAR;
-  navEl.innerHTML = `
+  const u=localStorage.getItem('username');
+  if(!u){resetNav();return;}
+  const users=getUsers(); const me=users.find(x=>x.username===u);
+  const av=(me&&me.avatar)?me.avatar:DEFAULT_AVATAR;
+  navEl.innerHTML=`
     <a href="community.html">Cộng đồng</a>
     <a href="groups.html">Nhóm học tập</a>
-    <img id="navAvatar" src="${avatar}" alt="avatar" style="width:36px;height:36px;border-radius:50%;object-fit:cover;cursor:pointer;margin-left:6px">
-    <span style="margin-left:8px">Xin chào, <strong id="nav-user">${username}</strong></span>
-    <button id="logoutBtn" class="link" style="margin-left:8px">Đăng xuất</button>
-  `;
-  $('#logoutBtn').addEventListener('click', ()=>{ localStorage.removeItem('username'); renderNav(); });
-  $('#navAvatar').addEventListener('click', ()=>{ userPanel.classList.add('open'); showUserInfo(); });
-  document.getElementById('nav-user').addEventListener('click', ()=>{ userPanel.classList.add('open'); showUserInfo(); });
+    <img id="navAvatar" src="${av}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;cursor:pointer">
+    <span>Xin chào, <strong id="nav-user">${u}</strong></span>
+    <button id="logoutBtn">Đăng xuất</button>`;
+  $('#logoutBtn').onclick=()=>{localStorage.removeItem('username');renderNav();};
+  $('#navAvatar').onclick=()=>{userPanel.classList.add('open');showUserInfo();};
+  $('#nav-user').onclick=()=>{userPanel.classList.add('open');showUserInfo();};
 }
 
-/* ---------- User Info ---------- */
+const modalLogin=$('#modalLogin'),modalSignup=$('#modalSignup');
+$('#closeLogin').onclick=()=>modalLogin.style.display='none';
+$('#closeSignup').onclick=()=>modalSignup.style.display='none';
+$('#toSignupFromLogin').onclick=()=>{modalLogin.style.display='none';modalSignup.style.display='block';};
+$('#toLoginFromSignup').onclick=()=>{modalSignup.style.display='none';modalLogin.style.display='block';};
+
+$('#submitSignup').onclick=()=>{
+  const u=$('#signupUser').value.trim(),p=$('#signupPass').value;
+  const err=$('#signupError');
+  if(!u||!p){err.textContent='Điền đủ thông tin';err.style.display='block';return;}
+  if(p.length<8||p.length>16){err.textContent='Mật khẩu 8-16 ký tự';err.style.display='block';return;}
+  const arr=getUsers();
+  if(arr.some(x=>x.username.toLowerCase()===u.toLowerCase())){err.textContent='Tên đã tồn tại';err.style.display='block';return;}
+  arr.push({username:u,password:p,id:'#'+(1000+arr.length+1),avatar:null,dob:'',email:'',desc:'',friends:[]});
+  saveUsers(arr);localStorage.setItem('username',u);modalSignup.style.display='none';renderNav();
+};
+
+$('#submitLogin').onclick=()=>{
+  const u=$('#loginUser').value.trim(),p=$('#loginPass').value;const err=$('#loginError');
+  const arr=getUsers();const f=arr.find(x=>x.username===u&&x.password===p);
+  if(!f){err.textContent='Sai thông tin';err.style.display='block';return;}
+  localStorage.setItem('username',u);modalLogin.style.display='none';renderNav();
+};
+
+/* user panel info */
+const userPanel=$('#userPanel');$('#closeUserPanel').onclick=()=>userPanel.classList.remove('open');
 function showUserInfo(){
-  const username=localStorage.getItem('username');
-  const users=getUsers();
-  if(!username){
-    avatarPreview.src=DEFAULT_AVATAR;
-    infoName.value='Chưa đăng nhập'; infoID.value='Ẩn';
-    infoDOB.value=''; infoEmail.value=''; infoDesc.value='';
-    infoDOB.disabled=infoEmail.disabled=infoDesc.disabled=true; changeAvatarBtn.disabled=true;
-    friendListArea.innerHTML='<div style="color:var(--muted)">Bạn chưa đăng nhập.</div>';
-    friendInvitesBox.style.display='none'; return;
-  }
-  const me=users.find(u=>u.username===username);
-  if(!me){ avatarPreview.src=DEFAULT_AVATAR; return; }
-  avatarPreview.src=me.avatar||DEFAULT_AVATAR;
-  infoName.value=me.username; infoID.value=me.id; infoDOB.value=me.dob||''; infoEmail.value=me.email||''; infoDesc.value=me.desc||'';
-  infoDOB.disabled=infoEmail.disabled=infoDesc.disabled=false; changeAvatarBtn.disabled=false;
-  renderFriendsForUser(me); renderInvitesForUser(me.username);
+  const u=localStorage.getItem('username');const arr=getUsers();const me=arr.find(x=>x.username===u);
+  $('#avatarPreview').src=(me&&me.avatar)||DEFAULT_AVATAR;
+  $('#infoName').value=me?me.username:'Chưa đăng nhập';
+  $('#infoID').value=me?me.id:'Ẩn';
+  $('#infoDOB').value=me?me.dob:'';$('#infoEmail').value=me?me.email:'';$('#infoDesc').value=me?me.desc:'';
 }
+$('#changeAvatarBtn').onclick=()=>$('#infoAvatar').click();
+$('#infoAvatar').onchange=e=>{
+  const f=e.target.files[0];if(!f)return;const r=new FileReader();
+  r.onload=v=>{
+    const u=localStorage.getItem('username');const arr=getUsers();const me=arr.find(x=>x.username===u);
+    if(me){me.avatar=v.target.result;saveUsers(arr);renderNav();$('#avatarPreview').src=v.target.result;}
+  };r.readAsDataURL(f);
+};
+$('#saveUserInfo').onclick=()=>{
+  const u=localStorage.getItem('username');const arr=getUsers();const me=arr.find(x=>x.username===u);
+  if(me){me.dob=$('#infoDOB').value;me.email=$('#infoEmail').value;me.desc=$('#infoDesc').value;saveUsers(arr);alert('Đã lưu!');}
+};
 
-/* ---------- Friends / Invites ---------- */
-// (Giữ nguyên toàn bộ logic bạn đã có ở phần sau – không cần thay)
-...
-// (Toàn bộ phần friend search, invite, save user info, init() giữ nguyên như file cũ)
+function init(){renderNav();}
+init();
 </script>
-
 </body>
 </html>
