@@ -1,61 +1,52 @@
 <!doctype html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Nhóm học tập — Groups</title>
-  <style>
-    :root{
-      --bg:#f5f8ff; --card:#fff; --accent:#0072ff; --muted:#6b7280;
-    }
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:#111}
-    header{background:var(--card);padding:12px 20px;border-bottom:1px solid #e6eef8;display:flex;align-items:center;justify-content:space-between}
-    .brand{display:flex;align-items:center;gap:12px}
-    .logo{width:40px;height:40px;border-radius:8px;background:linear-gradient(135deg,#00c6ff,#0072ff);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
-    nav a{margin-left:12px;text-decoration:none;color:#111;font-weight:600}
-    .container{max-width:1200px;margin:28px auto;padding:0 16px}
-    .toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:12px;flex-wrap:wrap}
-    .btn{background:var(--accent);color:#fff;border:0;padding:9px 14px;border-radius:8px;cursor:pointer}
-    .btn.ghost{background:transparent;color:var(--accent);border:1px solid rgba(0,114,255,.12)}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
-    .card{background:var(--card);padding:12px;border-radius:10px;box-shadow:0 6px 18px rgba(2,6,23,0.06);display:flex;flex-direction:column;justify-content:space-between;min-height:120px}
-    .meta{font-size:13px;color:var(--muted);margin-top:8px}
-    .actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
-    .small{font-size:13px;padding:6px 8px;border-radius:8px;border:0;cursor:pointer}
-    .small.warn{background:#ef4444;color:#fff}
-    .small.ghost{background:transparent;border:1px solid #e6eef8}
-    .empty{color:var(--muted);padding:18px;background:#fff;border-radius:10px;text-align:center;box-shadow:0 6px 18px rgba(2,6,23,0.03)}
-    /* modal & chat giữ nguyên */
-    .backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;z-index:80}
-    .modal{background:var(--card);padding:18px;border-radius:12px;max-width:720px;width:92%;max-height:90vh;overflow:auto}
-    input,textarea,select{width:100%;padding:8px;border-radius:8px;border:1px solid #e6eaf5;margin-top:6px}
-    textarea{min-height:90px}
-    .chat-window{position:fixed;right:18px;bottom:18px;width:520px;height:640px;background:#fff;border-radius:12px;box-shadow:0 12px 40px rgba(2,6,23,0.18);display:flex;flex-direction:column;overflow:hidden;z-index:99}
-    .chat-header{padding:12px;background:linear-gradient(90deg,#0ea5ff,#0066ff);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:8px}
-    .chat-body{flex:1;padding:12px;overflow:auto;background:#f5f7fb}
-    .msg{margin-bottom:12px;display:flex;gap:8px;align-items:flex-end}
-    .msg.me{justify-content:flex-end}
-    .avatar-sm{width:36px;height:36px;border-radius:50%;object-fit:cover}
-    .bubble{max-width:72%;padding:8px 12px;border-radius:12px;background:#fff;box-shadow:0 4px 10px rgba(2,6,23,0.04)}
-    .bubble.me{background:#d7f3ff}
-    .bubble img{max-width:200px;border-radius:8px;display:block;margin-top:6px}
-    .chat-input{display:flex;padding:8px;border-top:1px solid #eee;gap:8px;align-items:center}
-    .chat-input input{flex:1;padding:8px;border-radius:8px;border:1px solid #e6eef8}
-    .chat-input button{padding:8px 12px;border-radius:8px;border:0;background:var(--accent);color:#fff}
-    .chat-controls{display:flex;gap:8px;align-items:center}
-    .searchWrap{display:flex;gap:8px;align-items:center}
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Nhóm học tập</title>
+<style>
+:root{--bg:#f5f8ff;--card:#fff;--accent:#0072ff;--muted:#6b7280}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:#111}
+header{background:var(--card);padding:12px 20px;border-bottom:1px solid #e6eef8;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:40px;height:40px;border-radius:8px;background:linear-gradient(135deg,#00c6ff,#0072ff);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
+nav a{margin-left:12px;text-decoration:none;color:#111;font-weight:600}
+.container{max-width:1200px;margin:28px auto;padding:0 16px}
+.toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:12px;flex-wrap:wrap}
+.btn{background:var(--accent);color:#fff;border:0;padding:9px 14px;border-radius:8px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--accent);border:1px solid rgba(0,114,255,.12)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.card{background:var(--card);padding:12px;border-radius:10px;box-shadow:0 6px 18px rgba(2,6,23,0.06);display:flex;flex-direction:column;justify-content:space-between;min-height:120px}
+.meta{font-size:13px;color:var(--muted);margin-top:8px}
+.actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.small{font-size:13px;padding:6px 8px;border-radius:8px;border:0;cursor:pointer}
+.small.warn{background:#ef4444;color:#fff}
+.small.ghost{background:transparent;border:1px solid #e6eef8}
+.empty{color:var(--muted);padding:18px;background:#fff;border-radius:10px;text-align:center;box-shadow:0 6px 18px rgba(2,6,23,0.03)}
+.backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;z-index:80}
+.modal{background:var(--card);padding:18px;border-radius:12px;max-width:720px;width:92%;max-height:90vh;overflow:auto}
+.chat-window{position:fixed;right:18px;bottom:18px;width:520px;height:640px;background:#fff;border-radius:12px;box-shadow:0 12px 40px rgba(2,6,23,0.18);display:flex;flex-direction:column;overflow:hidden;z-index:99}
+.chat-header{padding:12px;background:linear-gradient(90deg,#0ea5ff,#0066ff);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.chat-body{flex:1;padding:12px;overflow:auto;background:#f5f7fb}
+.msg{margin-bottom:12px;display:flex;gap:8px;align-items:flex-end}
+.msg.me{justify-content:flex-end}
+.avatar-sm{width:36px;height:36px;border-radius:50%;object-fit:cover}
+.bubble{max-width:72%;padding:8px 12px;border-radius:12px;background:#fff;box-shadow:0 4px 10px rgba(2,6,23,0.04)}
+.bubble.me{background:#d7f3ff}
+.bubble img{max-width:200px;border-radius:8px;display:block;margin-top:6px}
+.chat-input{display:flex;padding:8px;border-top:1px solid #eee;gap:8px;align-items:center}
+.chat-input input{flex:1;padding:8px;border-radius:8px;border:1px solid #e6eef8}
+.chat-input button{padding:8px 12px;border-radius:8px;border:0;background:var(--accent);color:#fff}
+.searchWrap{display:flex;gap:8px;align-items:center}
+</style>
 </head>
 <body>
 
 <header>
   <div class="brand">
     <div class="logo">ED</div>
-    <div>
-      <div style="font-weight:700">Nhóm học tập</div>
-      <div style="font-size:12px;color:var(--muted)">Tạo, yêu cầu tham gia, quản lý và trò chuyện</div>
-    </div>
+    <div><div style="font-weight:700">Nhóm học tập</div></div>
   </div>
   <nav>
     <a href="index.html">Trang chủ</a>
@@ -73,66 +64,200 @@
     <button id="btnCreate" class="btn">Tạo nhóm mới</button>
   </div>
 
-  <!-- Suggested area -->
   <section style="margin-bottom:18px">
     <h3 style="margin-bottom:10px">Gợi ý nhóm nổi bật</h3>
     <div id="suggestedArea" class="grid"></div>
     <div id="suggestEmpty" class="empty" style="display:none;margin-top:12px">Chưa có nhóm để gợi ý.</div>
   </section>
 
-  <!-- All groups -->
   <section>
-    <h3 style="margin-bottom:10px">Tất cả nhóm (do người dùng tạo)</h3>
+    <h3 style="margin-bottom:10px">Tất cả nhóm</h3>
     <div id="groupsGrid" class="grid"></div>
     <div id="noGroups" class="empty" style="margin-top:12px;display:none">Chưa có nhóm nào — hãy tạo nhóm đầu tiên!</div>
   </section>
 </main>
 
-<!-- Modal tạo nhóm, modal xác nhận, khung chat... -->
-<!-- giữ nguyên phần script của bạn, chỉ thêm đoạn xử lý dưới -->
+<!-- Modal tạo nhóm -->
+<div id="modalCreate" class="backdrop">
+  <div class="modal">
+    <h3>Tạo nhóm mới</h3>
+    <label>Tên nhóm</label>
+    <input id="inputGroupName">
+    <label>Mô tả</label>
+    <textarea id="inputGroupDesc"></textarea>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
+      <button id="cancelCreate" class="small ghost">Hủy</button>
+      <button id="confirmCreate" class="small" style="background:var(--accent);color:#fff">Tạo</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal xác nhận -->
+<div id="modalConfirm" class="backdrop">
+  <div class="modal">
+    <h3 id="confirmTitle">Xác nhận</h3>
+    <p id="confirmMsg"></p>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
+      <button id="confirmCancel" class="small">Hủy</button>
+      <button id="confirmOk" class="small warn">Xác nhận</button>
+    </div>
+  </div>
+</div>
+
+<!-- Chat window -->
+<div id="chatWindow" class="chat-window" style="display:none">
+  <div class="chat-header">
+    <div id="chatTitle" style="font-weight:700"></div>
+    <button id="closeChat" class="small ghost">Đóng</button>
+  </div>
+  <div id="chatBody" class="chat-body"></div>
+  <div class="chat-input">
+    <input id="chatInput" placeholder="Gửi tin nhắn...">
+    <button id="chatSend">Gửi</button>
+  </div>
+</div>
 
 <script>
-// ====== Giữ nguyên toàn bộ script cũ ở đây (chat, join, request...) ======
+/* ====== Helpers ====== */
+const DEFAULT_AVATAR='https://i.imgur.com/PHv4T6B.png';
+const uid=()=> 'g'+Date.now().toString(36);
+function getUsers(){return JSON.parse(localStorage.getItem('users')||'[]');}
+function getCurrentUser(){const u=localStorage.getItem('username');if(!u)return null;return getUsers().find(x=>x.username===u)||null;}
+function getGroups(){return JSON.parse(localStorage.getItem('groups')||'[]');}
+function saveGroups(gs){localStorage.setItem('groups',JSON.stringify(gs));}
+function getChats(){return JSON.parse(localStorage.getItem('groupChats')||'{}');}
+function saveChats(c){localStorage.setItem('groupChats',JSON.stringify(c));}
+function getRequests(){return JSON.parse(localStorage.getItem('groupJoinRequests')||'[]');}
+function saveRequests(r){localStorage.setItem('groupJoinRequests',JSON.stringify(r));}
+function timeNow(){return new Date().toLocaleString('vi-VN',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit',year:'numeric'});}
+function escapeHtml(s){return s?s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;'):'';}
 
-// Ngay sau khi khai báo const getGroups() v.v., thêm đoạn này:
-
-// --- Dọn dẹp nhóm mẫu (3 nhóm cũ) ---
-(function cleanupSampleGroups(){
-  const sampleNames = ["Sách & Văn Học", "Công Nghệ & Lập Trình", "Sống Khỏe Mỗi Ngày"];
-  let gs = JSON.parse(localStorage.getItem('groups')||'[]');
-  const before = gs.length;
-  gs = gs.filter(g => !sampleNames.some(n => g.name && g.name.toLowerCase() === n.toLowerCase()));
-  if(gs.length !== before){
-    localStorage.setItem('groups', JSON.stringify(gs));
-  }
+/* ====== Dọn nhóm mẫu ====== */
+(function(){
+  const bad=["Sách & Văn Học","Công Nghệ & Lập Trình","Sống Khỏe Mỗi Ngày"];
+  let g=getGroups();
+  const before=g.length;
+  g=g.filter(x=>!bad.some(n=>x.name&&x.name.toLowerCase()===n.toLowerCase()));
+  if(g.length!==before)saveGroups(g);
 })();
 
-// --- Khi hiển thị gợi ý, nếu không có nhóm, ẩn luôn suggestEmpty ---
+/* ====== Elements ====== */
+const suggestedArea=document.getElementById('suggestedArea');
+const suggestEmpty=document.getElementById('suggestEmpty');
+const groupsGrid=document.getElementById('groupsGrid');
+const noGroups=document.getElementById('noGroups');
+const btnCreate=document.getElementById('btnCreate');
+const modalCreate=document.getElementById('modalCreate');
+const inputGroupName=document.getElementById('inputGroupName');
+const inputGroupDesc=document.getElementById('inputGroupDesc');
+const cancelCreate=document.getElementById('cancelCreate');
+const confirmCreate=document.getElementById('confirmCreate');
+const chatWindow=document.getElementById('chatWindow');
+const chatTitle=document.getElementById('chatTitle');
+const chatBody=document.getElementById('chatBody');
+const chatInput=document.getElementById('chatInput');
+const chatSend=document.getElementById('chatSend');
+const closeChat=document.getElementById('closeChat');
+const searchInput=document.getElementById('searchInput');
+const searchBtn=document.getElementById('searchBtn');
+const clearSearch=document.getElementById('clearSearch');
+
+let openChatId=null;
+
+/* ====== Render ====== */
 function renderSuggested(){
-  const gs = getGroups().filter(g => g.owner && g.owner !== '(Ẩn)');
-  if(!gs.length){
-    suggestedArea.innerHTML='';
-    suggestEmpty.style.display='block';
-    return;
-  }
+  const gs=getGroups().filter(g=>g.owner&&g.owner!=='(Ẩn)');
+  if(!gs.length){suggestedArea.innerHTML='';suggestEmpty.style.display='block';return;}
   suggestEmpty.style.display='none';
-  const sorted = [...gs].sort((a,b)=>(b.members?.length||0)-(a.members?.length||0)).slice(0,3);
+  const sorted=[...gs].sort((a,b)=>(b.members?.length||0)-(a.members?.length||0)).slice(0,3);
   suggestedArea.innerHTML='';
   sorted.forEach(g=>{
-    const card = document.createElement('div');
-    card.className='card';
-    card.innerHTML=`
-      <div>
-        <h4 style="margin:0">${g.name}</h4>
-        <div class="meta">Chủ nhóm: <strong>${g.owner}</strong> • ${g.members?g.members.length:0} thành viên</div>
-        <p style="margin-top:8px;color:var(--muted)">${g.desc||'Không có mô tả'}</p>
-      </div>`;
-    suggestedArea.appendChild(card);
+    const c=document.createElement('div');
+    c.className='card';
+    c.innerHTML=`<div><h4>${escapeHtml(g.name)}</h4><div class="meta">Chủ nhóm: <strong>${g.owner}</strong> • ${(g.members||[]).length} thành viên</div><p style="margin-top:8px;color:var(--muted)">${escapeHtml(g.desc||'')}</p></div>`;
+    suggestedArea.appendChild(c);
   });
 }
+function renderGroups(list=null){
+  const gs=list||getGroups();
+  groupsGrid.innerHTML='';
+  if(!gs.length){noGroups.style.display='block';return;}else noGroups.style.display='none';
+  const me=getCurrentUser();
+  gs.forEach(g=>{
+    const c=document.createElement('div');
+    c.className='card';
+    const amOwner=me&&me.username===g.owner;
+    const isMember=me&&g.members?.includes(me.username);
+    const pending=getRequests().some(r=>r.groupId===g.id&&r.from===me?.username);
+    c.innerHTML=`<div><h3>${escapeHtml(g.name)}</h3><div class="meta">Chủ: <strong>${g.owner}</strong> • ${(g.members||[]).length} thành viên</div><p style="margin-top:8px;color:var(--muted)">${escapeHtml(g.desc||'')}</p></div>`;
+    const act=document.createElement('div');act.className='actions';
+    if(!me)act.append(btn('Đăng nhập để tham gia',()=>alert('Bạn cần đăng nhập'),'ghost'));
+    else if(amOwner){
+      act.append(btn('Duyệt yêu cầu',()=>manageReq(g.id)));
+      act.append(btn('Trò chuyện',()=>openChat(g.id)));
+      act.append(btn('Xóa nhóm',()=>delGroup(g.id),'warn'));
+    }else if(isMember){
+      act.append(btn('Rời nhóm',()=>leaveGroup(g.id),'ghost'));
+      act.append(btn('Trò chuyện',()=>openChat(g.id)));
+    }else if(pending){
+      act.append(btn('Đã yêu cầu',()=>alert('Đang chờ duyệt'),'ghost'));
+    }else{
+      act.append(btn('Yêu cầu tham gia',()=>joinReq(g.id)));
+    }
+    c.append(act);groupsGrid.append(c);
+  });
+}
+function btn(t,cb,cls){const b=document.createElement('button');b.className='small';if(cls)b.classList.add(cls);b.textContent=t;b.onclick=cb;return b;}
+function renderAll(){renderSuggested();renderGroups();}
 
-// Giữ nguyên tất cả phần còn lại của script (renderGroups, chat, search...)
-// Chỉ cần đảm bảo gọi renderSuggested() trong renderAll() như trước.
-</script>
-</body>
-</html>
+/* ====== Actions ====== */
+btnCreate.onclick=()=>{if(!getCurrentUser())return alert('Đăng nhập để tạo nhóm');inputGroupName.value='';inputGroupDesc.value='';modalCreate.style.display='flex';};
+cancelCreate.onclick=()=>modalCreate.style.display='none';
+confirmCreate.onclick=()=>{
+  const me=getCurrentUser();if(!me)return alert('Đăng nhập để tạo nhóm');
+  const name=inputGroupName.value.trim();if(!name)return alert('Nhập tên nhóm');
+  const desc=inputGroupDesc.value.trim();
+  const gs=getGroups();
+  const id=uid();gs.push({id,name,desc,owner:me.username,members:[me.username]});
+  saveGroups(gs);modalCreate.style.display='none';renderAll();openChat(id);
+};
+function joinReq(id){
+  const me=getCurrentUser();if(!me)return alert('Đăng nhập');
+  const rs=getRequests();if(rs.some(r=>r.groupId===id&&r.from===me.username))return alert('Đã gửi yêu cầu');
+  rs.push({groupId:id,from:me.username});saveRequests(rs);alert('Đã gửi yêu cầu');renderAll();
+}
+function manageReq(id){
+  const me=getCurrentUser();const g=getGroups().find(x=>x.id===id);
+  if(!g||g.owner!==me.username)return alert('Không hợp lệ');
+  const reqs=getRequests().filter(r=>r.groupId===id);
+  if(!reqs.length)return alert('Không có yêu cầu');
+  const names=reqs.map(r=>r.from).join(', ');
+  const who=prompt('Thành viên cần duyệt: '+names+'\nNhập tên:');if(!who)return;
+  const idx=reqs.findIndex(r=>r.from===who);
+  if(idx===-1)return alert('Không tìm thấy');
+  const all=getRequests().filter(r=>!(r.groupId===id&&r.from===who));saveRequests(all);
+  const gs=getGroups();const gg=gs.find(x=>x.id===id);
+  gg.members.push(who);saveGroups(gs);alert('Đã duyệt');renderAll();
+}
+function leaveGroup(id){
+  const me=getCurrentUser();const gs=getGroups();const g=gs.find(x=>x.id===id);
+  if(!g)return;if(g.owner===me.username)return alert('Chủ nhóm không thể rời');
+  g.members=g.members.filter(m=>m!==me.username);saveGroups(gs);renderAll();
+}
+function delGroup(id){
+  const me=getCurrentUser();const gs=getGroups();const g=gs.find(x=>x.id===id);
+  if(!g||g.owner!==me.username)return alert('Không hợp lệ');
+  if(!confirm('Xóa nhóm này?'))return;
+  saveGroups(gs.filter(x=>x.id!==id));renderAll();
+}
+
+/* ====== Chat ====== */
+function openChat(id){
+  const me=getCurrentUser();const g=getGroups().find(x=>x.id===id);
+  if(!g||!g.members.includes(me.username))return alert('Không có quyền');
+  openChatId=id;chatTitle.textContent=g.name;chatWindow.style.display='flex';renderChat();
+}
+function renderChat(){
+  const me=getCurrentUser();const msgs=(getChats()[openChatId]||[]);
+  chatBody.innerHTML='';msgs.forEach((m,i)=>{
+    const
