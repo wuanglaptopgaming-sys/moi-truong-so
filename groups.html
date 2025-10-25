@@ -1,62 +1,54 @@
 <!doctype html>
 <html lang="vi">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Nhóm học tập</title>
-<style>
-:root{
-  --bg:#f5f8ff; --card:#fff; --accent:#0072ff; --muted:#6b7280;
-  --danger:#ef4444;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:#111}
-header{background:var(--card);padding:12px 20px;border-bottom:1px solid #e6eef8;display:flex;align-items:center;justify-content:space-between}
-.brand{display:flex;align-items:center;gap:12px}
-.logo{width:40px;height:40px;border-radius:8px;background:linear-gradient(135deg,#00c6ff,#0072ff);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
-nav a{margin-left:12px;text-decoration:none;color:#111;font-weight:600}
-.container{max-width:1200px;margin:28px auto;padding:0 16px}
-.toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:12px;flex-wrap:wrap}
-.title{font-size:20px;font-weight:700}
-.btn{background:var(--accent);color:#fff;border:0;padding:9px 14px;border-radius:8px;cursor:pointer}
-.small{font-size:13px;padding:6px 8px;border-radius:8px;border:0;cursor:pointer}
-.small.ghost{background:transparent;border:1px solid #e6eef8}
-.small.warn{background:var(--danger);color:#fff}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
-.card{background:var(--card);padding:12px;border-radius:10px;box-shadow:0 6px 18px rgba(2,6,23,0.06);display:flex;flex-direction:column;justify-content:space-between;min-height:120px}
-.meta{font-size:13px;color:var(--muted);margin-top:8px}
-.actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
-.empty{color:var(--muted);padding:18px;background:#fff;border-radius:10px;text-align:center;box-shadow:0 6px 18px rgba(2,6,23,0.03)}
-.backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;z-index:80}
-.modal{background:var(--card);padding:18px;border-radius:12px;max-width:720px;width:92%;max-height:90vh;overflow:auto}
-input,textarea,select{width:100%;padding:8px;border-radius:8px;border:1px solid #e6eaf5;margin-top:6px}
-textarea{min-height:90px;resize:vertical}
-.searchWrap{display:flex;gap:8px;align-items:center}
-
-/* Chat — messenger-like */
-.chat-window{position:fixed;right:18px;bottom:18px;width:520px;height:640px;background:#fff;border-radius:12px;box-shadow:0 12px 40px rgba(2,6,23,0.18);display:flex;flex-direction:column;overflow:hidden;z-index:99}
-.chat-header{padding:12px;background:linear-gradient(90deg,#0ea5ff,#0066ff);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:8px}
-.chat-header .left{display:flex;gap:10px;align-items:center}
-.chat-header img{width:44px;height:44px;border-radius:8px;object-fit:cover}
-.chat-body{flex:1;padding:12px;overflow:auto;background:#f5f7fb;display:flex;flex-direction:column;gap:10px}
-.thread{display:flex;flex-direction:column;gap:12px}
-.msg{display:flex;gap:8px;align-items:flex-end;max-width:100%}
-.msg.me{justify-content:flex-end}
-.avatar-sm{width:36px;height:36px;border-radius:10px;object-fit:cover}
-.bubble{max-width:72%;padding:10px 12px;border-radius:12px;background:#fff;box-shadow:0 4px 10px rgba(2,6,23,0.04);word-break:break-word}
-.bubble.me{background:#d7f3ff}
-.bubble img{max-width:220px;border-radius:8px;display:block;margin-top:8px}
-.meta-small{font-size:12px;color:var(--muted);margin-top:6px}
-.chat-input{display:flex;padding:8px;border-top:1px solid #eee;gap:8px;align-items:center}
-.chat-input input{flex:1;padding:10px;border-radius:20px;border:1px solid #e6eef8}
-.chat-input .btn{padding:8px 12px;border-radius:20px}
-
-/* responsive */
-@media(max-width:820px){
-  .chat-window{width:94%;right:3%;bottom:8px;height:60vh}
-  .grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
-}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Nhóm học tập — Groups</title>
+  <style>
+    :root{
+      --bg:#f5f8ff; --card:#fff; --accent:#0072ff; --muted:#6b7280;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:#111}
+    header{background:var(--card);padding:12px 20px;border-bottom:1px solid #e6eef8;display:flex;align-items:center;justify-content:space-between}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:40px;height:40px;border-radius:8px;background:linear-gradient(135deg,#00c6ff,#0072ff);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
+    nav a{margin-left:12px;text-decoration:none;color:#111;font-weight:600}
+    .container{max-width:1200px;margin:28px auto;padding:0 16px}
+    .toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:12px;flex-wrap:wrap}
+    .title{font-size:20px;font-weight:700}
+    .btn{background:var(--accent);color:#fff;border:0;padding:9px 14px;border-radius:8px;cursor:pointer}
+    .btn.ghost{background:transparent;color:var(--accent);border:1px solid rgba(0,114,255,.12)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+    .card{background:var(--card);padding:12px;border-radius:10px;box-shadow:0 6px 18px rgba(2,6,23,0.06);display:flex;flex-direction:column;justify-content:space-between;min-height:120px}
+    .meta{font-size:13px;color:var(--muted);margin-top:8px}
+    .actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+    .small{font-size:13px;padding:6px 8px;border-radius:8px;border:0;cursor:pointer}
+    .small.warn{background:#ef4444;color:#fff}
+    .small.ghost{background:transparent;border:1px solid #e6eef8}
+    .empty{color:var(--muted);padding:18px;background:#fff;border-radius:10px;text-align:center;box-shadow:0 6px 18px rgba(2,6,23,0.03)}
+    /* modal */
+    .backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;z-index:80}
+    .modal{background:var(--card);padding:18px;border-radius:12px;max-width:720px;width:92%;max-height:90vh;overflow:auto}
+    input,textarea,select{width:100%;padding:8px;border-radius:8px;border:1px solid #e6eaf5;margin-top:6px}
+    textarea{min-height:90px}
+    /* chat */
+    .chat-window{position:fixed;right:18px;bottom:18px;width:520px;height:640px;background:#fff;border-radius:12px;box-shadow:0 12px 40px rgba(2,6,23,0.18);display:flex;flex-direction:column;overflow:hidden;z-index:99}
+    .chat-header{padding:12px;background:linear-gradient(90deg,#0ea5ff,#0066ff);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .chat-body{flex:1;padding:12px;overflow:auto;background:#f5f7fb}
+    .msg{margin-bottom:12px;display:flex;gap:8px;align-items:flex-end}
+    .msg.me{justify-content:flex-end}
+    .avatar-sm{width:36px;height:36px;border-radius:50%;object-fit:cover}
+    .bubble{max-width:72%;padding:8px 12px;border-radius:12px;background:#fff;box-shadow:0 4px 10px rgba(2,6,23,0.04)}
+    .bubble.me{background:#d7f3ff}
+    .bubble img{max-width:200px;border-radius:8px;display:block;margin-top:6px}
+    .chat-input{display:flex;padding:8px;border-top:1px solid #eee;gap:8px;align-items:center}
+    .chat-input input{flex:1;padding:8px;border-radius:8px;border:1px solid #e6eef8}
+    .chat-input button{padding:8px 12px;border-radius:8px;border:0;background:var(--accent);color:#fff}
+    .chat-controls{display:flex;gap:8px;align-items:center}
+    .searchWrap{display:flex;gap:8px;align-items:center}
+    @media(max-width:820px){.chat-window{width:94%;right:3%;bottom:8px;height:60vh}}
+  </style>
 </head>
 <body>
 
@@ -76,35 +68,42 @@ textarea{min-height:90px;resize:vertical}
 
 <main class="container">
   <div class="toolbar">
-    <div class="searchWrap">
-      <input id="searchInput" placeholder="Tìm nhóm (gõ 1 phần tên cũng được)"/>
-      <button id="searchBtn" class="small ghost">Tìm</button>
-      <button id="clearSearch" class="small ghost" style="display:none">Hủy tìm</button>
+    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+      <div class="title">Quản lý nhóm</div>
+      <div style="color:var(--muted);font-size:13px">Chỉ người đã đăng nhập mới có thể tạo / yêu cầu tham gia / trò chuyện</div>
     </div>
-    <div>
+
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <div class="searchWrap">
+        <input id="searchInput" placeholder="Tìm nhóm (ghi 1 phần tên cũng được)" style="padding:8px;border-radius:8px;border:1px solid #e6eef8">
+        <button id="searchBtn" class="small ghost">Tìm</button>
+        <button id="clearSearch" class="small ghost" style="display:none">Hủy tìm</button>
+      </div>
       <button id="btnCreate" class="btn">Tạo nhóm mới</button>
     </div>
   </div>
 
+  <!-- Suggested area: will show top 3 groups by member count -->
   <section style="margin-bottom:18px">
     <h3 style="margin-bottom:10px">Gợi ý nhóm nổi bật</h3>
     <div id="suggestedArea" class="grid"></div>
     <div id="suggestEmpty" class="empty" style="display:none;margin-top:12px">Chưa có nhóm để gợi ý.</div>
   </section>
 
+  <!-- All groups -->
   <section>
-    <h3 style="margin-bottom:10px">Nhóm </h3>
+    <h3 style="margin-bottom:10px">Tất cả nhóm (do người dùng tạo)</h3>
     <div id="groupsGrid" class="grid"></div>
     <div id="noGroups" class="empty" style="margin-top:12px;display:none">Chưa có nhóm nào — hãy tạo nhóm đầu tiên!</div>
   </section>
 </main>
 
-<!-- Modal tạo nhóm -->
+<!-- Modal create -->
 <div id="modalCreate" class="backdrop">
   <div class="modal" role="dialog" aria-modal="true">
     <h3>Tạo nhóm mới</h3>
     <label>Tên nhóm</label>
-    <input id="inputGroupName" placeholder="Ví dụ: Nhóm Lập trình JS" />
+    <input id="inputGroupName" placeholder="Ví dụ: Nhóm Lập trình JS">
     <label>Mô tả</label>
     <textarea id="inputGroupDesc" placeholder="Mục tiêu, nội quy ngắn..."></textarea>
     <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
@@ -129,33 +128,29 @@ textarea{min-height:90px;resize:vertical}
 <!-- Chat window -->
 <div id="chatWindow" class="chat-window" style="display:none" role="dialog" aria-modal="true">
   <div class="chat-header">
-    <div class="left">
-      <img id="chatAvatar" src="" alt="avatar">
+    <div style="display:flex;gap:8px;align-items:center">
+      <img id="chatAvatar" src="" class="avatar-sm" style="width:40px;height:40px;border-radius:8px">
       <div>
         <div id="chatTitle" style="font-weight:700"></div>
         <div id="chatMeta" style="font-size:12px;opacity:0.9"></div>
       </div>
     </div>
-    <div style="display:flex;gap:8px;align-items:center">
-      <label style="cursor:pointer;color:#fff">📷<input id="chatImageInput" type="file" accept="image/*" style="display:none"></label>
+    <div class="chat-controls">
+      <label style="cursor:pointer">📷<input id="chatImageInput" type="file" accept="image/*" style="display:none"></label>
       <button id="closeChat" class="small ghost">Đóng</button>
     </div>
   </div>
-
-  <div id="chatBody" class="chat-body">
-    <!-- messages rendered here -->
-  </div>
-
+  <div id="chatBody" class="chat-body"></div>
   <div class="chat-input">
-    <input id="chatInput" placeholder="Gửi tin nhắn..." />
-    <button id="chatSend" class="btn">Gửi</button>
+    <input id="chatInput" placeholder="Gửi tin nhắn...">
+    <button id="chatSend">Gửi</button>
   </div>
 </div>
 
 <script>
-/* ========= Helpers & storage ========= */
+/* ---------- Helpers & storage ---------- */
 const DEFAULT_AVATAR = 'https://i.imgur.com/PHv4T6B.png';
-const uid = () => 'g' + Date.now().toString(36).slice(2,10);
+const uid = ()=> 'g' + Date.now().toString(36).slice(2,10);
 
 function getUsers(){ return JSON.parse(localStorage.getItem('users')||'[]'); }
 function getCurrentUser(){ const u = localStorage.getItem('username'); if(!u) return null; return getUsers().find(x=>x.username===u) || null; }
@@ -166,25 +161,23 @@ function saveChats(c){ localStorage.setItem('groupChats', JSON.stringify(c)); }
 function getJoinRequests(){ return JSON.parse(localStorage.getItem('groupJoinRequests')||'[]'); }
 function saveJoinRequests(r){ localStorage.setItem('groupJoinRequests', JSON.stringify(r)); }
 function timeNow(){ return new Date().toLocaleString('vi-VN',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit',year:'numeric'}); }
-function escapeHtml(s){ if(!s) return ''; return s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;'); }
 
-/* ========= Elements ========= */
+/* ---------- Elements ---------- */
 const suggestedArea = document.getElementById('suggestedArea');
 const suggestEmpty = document.getElementById('suggestEmpty');
 const groupsGrid = document.getElementById('groupsGrid');
 const noGroups = document.getElementById('noGroups');
-const btnCreate = document.getElementById('btnCreate');
 const modalCreate = document.getElementById('modalCreate');
+const btnCreate = document.getElementById('btnCreate');
 const inputGroupName = document.getElementById('inputGroupName');
 const inputGroupDesc = document.getElementById('inputGroupDesc');
 const cancelCreate = document.getElementById('cancelCreate');
 const confirmCreate = document.getElementById('confirmCreate');
-
 const modalConfirm = document.getElementById('modalConfirm');
 const confirmTitle = document.getElementById('confirmTitle');
 const confirmMsg = document.getElementById('confirmMsg');
-const confirmCancel = document.getElementById('confirmCancel');
 const confirmOk = document.getElementById('confirmOk');
+const confirmCancel = document.getElementById('confirmCancel');
 
 const searchInput = document.getElementById('searchInput');
 const searchBtn = document.getElementById('searchBtn');
@@ -200,250 +193,251 @@ const chatSend = document.getElementById('chatSend');
 const closeChat = document.getElementById('closeChat');
 const chatImageInput = document.getElementById('chatImageInput');
 
-/* ========= Initial cleanup (remove sample groups) ========= */
-(function cleanupSampleGroups(){
-  const sampleNames = ["Sách & Văn Học","Công Nghệ & Lập Trình","Sống Khỏe Mỗi Ngày"];
-  let gs = getGroups();
-  const before = gs.length;
-  gs = gs.filter(g => !sampleNames.some(n => g.name && g.name.toLowerCase() === n.toLowerCase()));
-  if(gs.length !== before) saveGroups(gs);
-})();
-
-/* ========= State ========= */
+/* ---------- State ---------- */
+let groups = getGroups();
+let activeConfirmCb = null;
 let openChatGroupId = null;
-let activeConfirmCallback = null;
 
-/* ========= Utility ========= */
-function el(tag, cls){ const e=document.createElement(tag); if(cls) e.className = cls; return e; }
-function btn(text, cb, variant){ const b = el('button','small'); if(variant==='ghost') b.classList.add('ghost'); if(variant==='warn') b.classList.add('warn'); b.textContent=text; b.addEventListener('click', cb); return b; }
+/* ---------- Util ---------- */
+function escapeHtml(s){ if(!s) return ''; return s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;'); }
+function el(tag, cls){ const e=document.createElement(tag); if(cls) e.className=cls; return e; }
 
-/* ========= Render suggested top-3 by members ========= */
+/* ---------- Render suggested top-3 by members ---------- */
 function renderSuggested(){
-  const gs = getGroups().filter(g => g.owner && g.owner !== '(Ẩn)');
+  const gs = getGroups();
   if(!gs.length){ suggestedArea.innerHTML=''; suggestEmpty.style.display='block'; return; }
   suggestEmpty.style.display='none';
   const sorted = [...gs].sort((a,b)=>(b.members?.length||0)-(a.members?.length||0)).slice(0,3);
-  suggestedArea.innerHTML = '';
+  suggestedArea.innerHTML='';
   sorted.forEach(g=>{
     const card = el('div','card');
-    card.innerHTML = `<div><h4 style="margin:0">${escapeHtml(g.name)}</h4>
-      <div class="meta">Chủ: <strong>${escapeHtml(g.owner)}</strong> • ${(g.members||[]).length} thành viên</div>
-      <p style="margin-top:8px;color:var(--muted)">${escapeHtml(g.desc||'')}</p></div>`;
+    card.innerHTML = `<div><h4 style="margin:0">${escapeHtml(g.name)}</h4><div class="meta">Chủ: <strong>${escapeHtml(g.owner)}</strong> • ${g.members?g.members.length:0} thành viên</div><p style="margin-top:8px;color:var(--muted)">${escapeHtml(g.desc||'Không có mô tả')}</p></div>`;
     const actions = el('div','actions');
-    actions.appendChild(btn('Xem', ()=> viewGroup(g.id)));
-    card.appendChild(actions);
+    actions.appendChild(makeActionButton('Xem',()=> viewGroup(g.id)));
     suggestedArea.appendChild(card);
+    card.appendChild(actions);
   });
 }
 
-/* ========= Render all groups (full list or filtered) ========= */
+/* ---------- Render all groups (or filtered) ---------- */
 function renderGroups(filtered=null){
-  const list = filtered || getGroups();
-  groupsGrid.innerHTML = '';
+  groups = getGroups();
+  const list = filtered || groups;
+  groupsGrid.innerHTML='';
   if(!list.length){ noGroups.style.display='block'; return; } else noGroups.style.display='none';
   const me = getCurrentUser();
   list.forEach(g=>{
     const card = el('div','card');
-    card.innerHTML = `<div><h3>${escapeHtml(g.name)}</h3>
-      <div class="meta">Chủ: <strong>${escapeHtml(g.owner)}</strong> • ${(g.members||[]).length} thành viên</div>
-      <p style="margin-top:8px;color:var(--muted)">${escapeHtml(g.desc||'')}</p></div>`;
-    const actions = el('div','actions');
-    // actions vary by role
+    const memberCount = (g.members && g.members.length) || 0;
+    const owner = g.owner || '(Ẩn)';
+    const amOwner = me && me.username === g.owner;
+    const isMember = me && g.members && g.members.includes(me.username);
+    const pending = me && getJoinRequests().some(r=>r.groupId===g.id && r.from===me.username);
+    card.innerHTML = `
+      <div>
+        <h3 style="margin:0">${escapeHtml(g.name)}</h3>
+        <div class="meta">Chủ: <strong>${escapeHtml(owner)}</strong> • Thành viên: ${memberCount}</div>
+        <p style="margin-top:8px;color:var(--muted)">${escapeHtml(g.desc||'Không có mô tả')}</p>
+      </div>
+      <div class="actions"></div>
+    `;
+    const actions = card.querySelector('.actions');
+
+    // action buttons based on role & status
     if(!me){
-      actions.appendChild(btn('Đăng nhập để tham gia', ()=> alert('Bạn cần đăng nhập để thực hiện hành động này.'), 'ghost'));
+      actions.appendChild(makeActionButton('Đăng nhập để tham gia', ()=> alert('Bạn cần đăng nhập để thực hiện hành động này.'),'ghost'));
     } else {
-      const amOwner = (me.username === g.owner);
-      const isMember = (g.members||[]).includes(me.username);
-      const pending = getJoinRequests().some(r=>r.groupId===g.id && r.from===me.username);
       if(amOwner){
-        actions.appendChild(btn('Duyệt yêu cầu', ()=> manageJoinRequests(g.id)));
-        actions.appendChild(btn('Trò chuyện', ()=> openChat(g.id)));
-        actions.appendChild(btn('Xóa nhóm', ()=> confirmDeleteGroup(g.id), 'warn'));
-      } else if(isMember){
-        actions.appendChild(btn('Rời nhóm', ()=> leaveGroup(g.id), 'ghost'));
-        actions.appendChild(btn('Trò chuyện', ()=> openChat(g.id)));
-      } else if(pending){
-        actions.appendChild(btn('Đã yêu cầu', ()=> alert('Bạn đã gửi yêu cầu tham gia. Chờ chủ nhóm duyệt.'), 'ghost'));
+        actions.appendChild(makeActionButton('Duyệt yêu cầu', ()=> manageJoinRequests(g.id)));
+        actions.appendChild(makeActionButton('Trò chuyện', ()=> openChat(g.id)));
+        actions.appendChild(makeActionButton('Xóa nhóm', ()=> confirmDeleteGroup(g.id),'warn'));
       } else {
-        actions.appendChild(btn('Yêu cầu tham gia', ()=> requestToJoin(g.id)));
+        if(isMember){
+          actions.appendChild(makeActionButton('Rời nhóm', ()=> leaveGroup(g.id),'ghost'));
+          actions.appendChild(makeActionButton('Trò chuyện', ()=> openChat(g.id)));
+        } else {
+          if(pending){
+            actions.appendChild(makeActionButton('Đã yêu cầu', ()=> alert('Bạn đã gửi yêu cầu tham gia. Chờ chủ nhóm duyệt.'),'ghost'));
+          } else {
+            actions.appendChild(makeActionButton('Yêu cầu tham gia', ()=> requestToJoin(g.id)));
+          }
+        }
       }
     }
-    card.appendChild(actions);
+
     groupsGrid.appendChild(card);
   });
 }
 
-/* ========= View group quick (if member open chat, else show info + request) ========= */
-function viewGroup(groupId){
-  const g = getGroups().find(x=>x.id===groupId);
-  if(!g) return alert('Nhóm không tồn tại.');
-  const me = getCurrentUser();
-  if(me && (g.members||[]).includes(me.username)){
-    openChat(groupId);
-  } else {
-    let info = `Nhóm: ${g.name}\nChủ: ${g.owner}\nThành viên: ${(g.members||[]).length}\n\n${g.desc||''}`;
-    if(me){
-      if(confirm(info + '\n\nBạn có muốn gửi yêu cầu tham gia?')) requestToJoin(groupId);
-    } else {
-      alert(info + '\n\nBạn cần đăng nhập để gửi yêu cầu tham gia.');
-    }
-  }
+function makeActionButton(text, cb, kind){
+  const b = el('button','small');
+  if(kind==='warn'){ b.classList.add('warn'); }
+  if(kind==='ghost'){ b.classList.add('ghost'); }
+  b.textContent = text;
+  b.addEventListener('click', cb);
+  return b;
 }
 
-/* ========= Create group ========= */
+/* ---------- Group actions ---------- */
 btnCreate.addEventListener('click', ()=>{
   if(!getCurrentUser()){ alert('Bạn cần đăng nhập để tạo nhóm!'); return; }
   inputGroupName.value=''; inputGroupDesc.value='';
-  modalCreate.style.display = 'flex';
+  modalCreate.style.display='flex';
 });
-cancelCreate.addEventListener('click', ()=> modalCreate.style.display = 'none');
+cancelCreate.addEventListener('click', ()=> modalCreate.style.display='none');
+
 confirmCreate.addEventListener('click', ()=>{
-  const me = getCurrentUser();
-  if(!me){ alert('Bạn cần đăng nhập'); modalCreate.style.display='none'; return; }
   const name = inputGroupName.value.trim();
   const desc = inputGroupDesc.value.trim();
-  if(!name) return alert('Vui lòng nhập tên nhóm');
+  const me = getCurrentUser();
+  if(!me){ alert('Bạn cần đăng nhập!'); modalCreate.style.display='none'; return; }
+  if(!name) { alert('Nhập tên nhóm'); return; }
+  // ensure no duplicate name (case-insensitive)
   const gs = getGroups();
-  if(gs.some(x=>x.name.toLowerCase() === name.toLowerCase())) return alert('Tên nhóm đã tồn tại');
+  if(gs.some(g=>g.name.toLowerCase()===name.toLowerCase())){ alert('Tên nhóm đã tồn tại'); return; }
   const id = uid();
-  const newG = { id, name, desc, owner: me.username, members: [me.username], createdAt: Date.now() };
-  gs.unshift(newG);
+  const g = { id, name, desc, owner: me.username, members: [me.username], createdAt: Date.now() };
+  gs.unshift(g);
   saveGroups(gs);
   modalCreate.style.display='none';
   renderAll();
-  // auto-open chat after creating
+  // open chat
   openChat(id);
 });
 
-/* ========= Join requests ========= */
+/* request join */
 function requestToJoin(groupId){
   const me = getCurrentUser();
   if(!me){ alert('Bạn cần đăng nhập'); return; }
+  const gs = getGroups();
+  const g = gs.find(x=>x.id===groupId);
+  if(!g) return alert('Nhóm không tồn tại');
+  // push request
   const reqs = getJoinRequests();
-  if(reqs.some(r=>r.groupId===groupId && r.from===me.username)) return alert('Bạn đã gửi yêu cầu rồi.');
+  if(reqs.some(r=>r.groupId===groupId && r.from===me.username)) return alert('Bạn đã gửi yêu cầu tham gia rồi.');
   reqs.push({ id: 'r'+Date.now(), groupId, from: me.username, time: Date.now() });
   saveJoinRequests(reqs);
   alert('Đã gửi yêu cầu tham gia. Chủ nhóm sẽ duyệt.');
   renderAll();
 }
 
-/* Owner reviews join requests */
+/* owner manage requests */
 function manageJoinRequests(groupId){
   const me = getCurrentUser();
   if(!me) return alert('Bạn cần đăng nhập.');
   const g = getGroups().find(x=>x.id===groupId);
   if(!g) return alert('Nhóm không tồn tại.');
-  if(g.owner !== me.username) return alert('Chỉ chủ nhóm mới có quyền duyệt.');
+  if(g.owner !== me.username) return alert('Chỉ chủ nhóm mới có quyền duyệt yêu cầu.');
   const reqs = getJoinRequests().filter(r=>r.groupId===groupId);
   if(!reqs.length) return alert('Không có yêu cầu nào.');
-  // show a simple selection flow
-  let message = 'Yêu cầu tham gia:\n';
-  reqs.forEach((r,i)=> message += `${i+1}. ${r.from}\n`);
-  const inp = prompt(message + '\nNhập số thứ tự để duyệt (ví dụ 1) hoặc để trống để hủy:');
-  if(!inp) return;
-  const idx = parseInt(inp) - 1;
+  // show simple prompt listing
+  let list = 'Yêu cầu tham gia:\n';
+  reqs.forEach((r,i)=> list += `${i+1}. ${r.from}\n`);
+  const sel = prompt(list + '\nNhập số thứ tự để duyệt (hoặc để trống để hủy):');
+  if(!sel) return;
+  const idx = parseInt(sel) - 1;
   if(isNaN(idx) || idx < 0 || idx >= reqs.length) return alert('Lựa chọn không hợp lệ.');
   const chosen = reqs[idx];
-  if(!confirm(`Bạn có chấp nhận ${chosen.from} vào nhóm "${g.name}"?`)) {
-    // remove request
-    const all = getJoinRequests().filter(r=>r.id !== chosen.id);
-    saveJoinRequests(all);
-    renderAll();
-    return alert('Đã từ chối.');
+  const ok = confirm(`Bạn muốn chấp nhận ${chosen.from} vào nhóm "${g.name}"? (OK = chấp nhận, Cancel = từ chối)`);
+  let all = getJoinRequests();
+  const removeIndex = all.findIndex(x=>x.id===chosen.id);
+  if(removeIndex > -1) all.splice(removeIndex,1);
+  saveJoinRequests(all);
+  if(ok){
+    // add to members
+    const gs = getGroups();
+    const gg = gs.find(x=>x.id===groupId);
+    if(!gg.members) gg.members = [];
+    if(!gg.members.includes(chosen.from)) gg.members.push(chosen.from);
+    saveGroups(gs);
+    alert('Đã thêm thành viên.');
+  } else {
+    alert('Đã từ chối.');
   }
-  // accept: add to members and remove request
-  let gs = getGroups();
-  const gg = gs.find(x=>x.id===groupId);
-  if(!gg.members) gg.members = [];
-  if(!gg.members.includes(chosen.from)) gg.members.push(chosen.from);
-  saveGroups(gs);
-  saveJoinRequests(getJoinRequests().filter(r=>r.id !== chosen.id));
-  alert('Đã chấp nhận.');
   renderAll();
 }
 
-/* ========= Leave / Delete / Kick ========= */
+/* leave group */
 function leaveGroup(groupId){
   const me = getCurrentUser();
-  if(!me) return alert('Bạn cần đăng nhập.');
-  let gs = getGroups();
+  if(!me) return;
+  const gs = getGroups();
   const g = gs.find(x=>x.id===groupId);
-  if(!g) return alert('Nhóm không tồn tại.');
-  if(g.owner === me.username) return alert('Chủ nhóm không thể rời. Xóa nhóm nếu muốn.');
+  if(!g) return;
+  if(g.owner === me.username){ return alert('Chủ nhóm không thể rời. Nếu muốn, xóa nhóm.'); }
   g.members = (g.members||[]).filter(m=>m!==me.username);
   saveGroups(gs);
   renderAll();
 }
 
+/* delete group confirm */
 function confirmDeleteGroup(groupId){
   const me = getCurrentUser();
   const g = getGroups().find(x=>x.id===groupId);
-  if(!g || g.owner !== me.username) return alert('Bạn không có quyền.');
-  activeConfirmCallback = ()=> {
-    // delete group & its chats & related requests
-    let gs = getGroups().filter(x=>x.id !== groupId);
+  if(!g) return;
+  if(!me || me.username !== g.owner) return alert('Chỉ chủ nhóm mới có quyền xóa.');
+  // confirm modal
+  activeConfirmCb = ()=> {
+    let gs = getGroups().filter(x=>x.id!==groupId);
     saveGroups(gs);
     const chats = getChats();
-    if(chats[groupId]) { delete chats[groupId]; saveChats(chats); }
-    saveJoinRequests(getJoinRequests().filter(r=>r.groupId !== groupId));
-    modalConfirm.style.display='none';
+    delete chats[groupId];
+    saveChats(chats);
+    // remove related join requests
+    let reqs = getJoinRequests().filter(r=>r.groupId!==groupId);
+    saveJoinRequests(reqs);
+    hideConfirm();
     renderAll();
     if(openChatGroupId === groupId) closeChatWindow();
   };
   confirmTitle.textContent = 'Xóa nhóm';
   confirmMsg.textContent = `Bạn có chắc muốn xóa nhóm "${g.name}"?`;
-  modalConfirm.style.display = 'flex';
+  document.getElementById('modalConfirm').style.display = 'flex';
 }
 
-function confirmKickMember(groupId, username){
-  const me = getCurrentUser();
+/* confirm modal handlers */
+confirmCancel.addEventListener('click', ()=> { document.getElementById('modalConfirm').style.display='none'; activeConfirmCb=null; });
+confirmOk.addEventListener('click', ()=> { document.getElementById('modalConfirm').style.display='none'; if(typeof activeConfirmCb==='function') activeConfirmCb(); activeConfirmCb=null; });
+
+function hideConfirm(){ document.getElementById('modalConfirm').style.display='none'; activeConfirmCb=null; }
+
+/* view group (scroll into view or highlight) */
+function viewGroup(groupId){
+  // simple: open chat if member, else show details in alert
   const g = getGroups().find(x=>x.id===groupId);
-  if(!g || g.owner !== me.username) return alert('Bạn không có quyền.');
-  activeConfirmCallback = ()=> {
-    let gs = getGroups();
-    const gg = gs.find(x=>x.id===groupId);
-    gg.members = gg.members.filter(m=>m!==username);
-    saveGroups(gs);
-    modalConfirm.style.display='none';
-    renderAll();
-  };
-  confirmTitle.textContent = 'Kick thành viên';
-  confirmMsg.textContent = `Bạn có chắc muốn kick ${username} khỏi nhóm "${g.name}"?`;
-  modalConfirm.style.display='flex';
+  if(!g) return alert('Không tìm thấy nhóm.');
+  const me = getCurrentUser();
+  if(me && g.members && g.members.includes(me.username)) return openChat(groupId);
+  // else show basic info + option to request to join
+  let info = `Nhóm: ${g.name}\nChủ: ${g.owner}\nThành viên: ${(g.members||[]).length}\n\n${g.desc||''}`;
+  if(me) {
+    const ask = confirm(info + '\n\nBạn có muốn gửi yêu cầu tham gia?');
+    if(ask) requestToJoin(groupId);
+  } else {
+    alert(info + '\n\nBạn cần đăng nhập để gửi yêu cầu tham gia.');
+  }
 }
 
-/* modal confirm handlers */
-confirmCancel.addEventListener('click', ()=> { modalConfirm.style.display='none'; activeConfirmCallback = null; });
-confirmOk.addEventListener('click', ()=> {
-  modalConfirm.style.display='none';
-  if(typeof activeConfirmCallback === 'function') activeConfirmCallback();
-  activeConfirmCallback = null;
-});
-
-/* ========= Chat logic (Messenger-like) ========= */
-let openChatGroupId = null;
-
+/* ---------- Chat: open, render, send, delete, images ---------- */
 function openChat(groupId){
   const me = getCurrentUser();
   if(!me) return alert('Bạn cần đăng nhập để chat.');
   const g = getGroups().find(x=>x.id===groupId);
   if(!g) return alert('Nhóm không tồn tại.');
-  if(!(g.members||[]).includes(me.username)) return alert('Bạn phải là thành viên để chat trong nhóm này.');
+  if(!(g.members && g.members.includes(me.username))) return alert('Bạn phải là thành viên để chat.');
   openChatGroupId = groupId;
   chatTitle.textContent = g.name;
   chatMeta.textContent = `${(g.members||[]).length} thành viên • Chủ: ${g.owner}`;
-  chatAvatar.src = (getUsers().find(u=>u.username===g.owner)?.avatar) || DEFAULT_AVATAR;
-  chatWindow.style.display = 'flex';
+  chatAvatar.src = getUsers().find(u=>u.username===g.owner)?.avatar || DEFAULT_AVATAR;
+  document.getElementById('chatWindow').style.display = 'flex';
   renderChat();
 }
 
-function closeChatWindow(){
-  chatWindow.style.display = 'none';
-  openChatGroupId = null;
-  chatBody.innerHTML = '';
-}
+/* close chat */
 closeChat.addEventListener('click', ()=> closeChatWindow());
+function closeChatWindow(){ document.getElementById('chatWindow').style.display='none'; openChatGroupId=null; chatBody.innerHTML=''; }
 
+/* render chat messages */
 function renderChat(){
   if(!openChatGroupId) return;
   const chats = getChats();
@@ -452,37 +446,37 @@ function renderChat(){
   const me = getCurrentUser();
   msgs.forEach((m, idx) => {
     const row = el('div','msg' + ((m.from === (me && me.username)) ? ' me' : ''));
+    // avatar
     const avatarEl = el('img','avatar-sm');
     avatarEl.src = (getUsers().find(u=>u.username===m.from)?.avatar) || DEFAULT_AVATAR;
-    avatarEl.title = m.from;
+    avatarEl.style.width = '36px'; avatarEl.style.height='36px'; avatarEl.style.borderRadius='8px';
+    // bubble
     const bubble = el('div','bubble' + ((m.from === (me && me.username)) ? ' me' : ''));
-    // header: name + time
-    const headerHtml = `<div style="font-size:13px;margin-bottom:6px"><strong>${escapeHtml(m.from)}</strong> <span style="font-size:11px;color:var(--muted);margin-left:8px">${escapeHtml(m.time)}</span></div>`;
-    bubble.innerHTML = headerHtml + `<div>${escapeHtml(m.text||'')}</div>`;
+    bubble.innerHTML = `<div style="font-size:13px;margin-bottom:6px"><strong>${escapeHtml(m.from)}</strong> <span style="font-size:11px;color:var(--muted);margin-left:8px">${escapeHtml(m.time)}</span></div>`;
+    bubble.innerHTML += `<div>${escapeHtml(m.text||'')}</div>`;
     if(m.image){
-      const imgHtml = `<div><img src="${m.image}" alt="img"></div>`;
-      bubble.innerHTML += imgHtml;
+      bubble.innerHTML += `<div><img src="${m.image}" alt="image"></div>`;
     }
-    // delete control: sender or owner can delete message
-    const g = getGroups().find(x=>x.id===openChatGroupId);
-    if(me && (m.from === me.username || (g && g.owner === me.username))){
+    // delete control (sender or owner)
+    if(me && (m.from === me.username || getGroups().find(g=>g.id===openChatGroupId)?.owner === me.username)){
       const delBtn = el('button','small ghost');
       delBtn.textContent = '✖';
       delBtn.style.marginLeft = '8px';
-      delBtn.addEventListener('click', ()=>{
+      delBtn.addEventListener('click', ()=> {
         if(!confirm('Xóa tin nhắn này?')) return;
-        const all = getChats();
-        all[openChatGroupId] = all[openChatGroupId].filter((_,i)=>i!==idx);
-        saveChats(all);
+        const chatsAll = getChats();
+        chatsAll[openChatGroupId] = chatsAll[openChatGroupId].filter((_,i)=>i!==idx);
+        saveChats(chatsAll);
         renderChat();
       });
       bubble.appendChild(delBtn);
     }
-
+    // assemble
     if(m.from === (me && me.username)){
+      // me: show bubble on right
       row.appendChild(bubble);
       row.appendChild(avatarEl);
-      row.classList.add('me');
+      row.style.justifyContent = 'flex-end';
     } else {
       row.appendChild(avatarEl);
       row.appendChild(bubble);
@@ -492,48 +486,48 @@ function renderChat(){
   chatBody.scrollTop = chatBody.scrollHeight;
 }
 
-/* send message */
+/* send chat (text) */
 chatSend.addEventListener('click', sendChat);
-chatInput.addEventListener('keydown', (e)=> { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); } });
-
+chatInput.addEventListener('keydown',(e)=>{ if(e.key==='Enter') sendChat(); });
 function sendChat(){
-  const text = chatInput.value.trim();
-  if(!openChatGroupId) return alert('Mở chat nhóm trước khi gửi tin nhắn.');
-  if(!text && !chatPendingImage) return;
+  const txt = chatInput.value.trim();
+  if(!txt && !chatImagePending) return;
+  if(!openChatGroupId) return alert('Mở 1 nhóm để gửi tin nhắn.');
   const me = getCurrentUser();
   if(!me) return alert('Bạn cần đăng nhập.');
   const chats = getChats();
-  if(!chats[openChatGroupId]) chats[openChatGroupId] = [];
-  const msg = { from: me.username, text: text || '', time: timeNow() };
-  if(chatPendingImage){ msg.image = chatPendingImage; chatPendingImage = null; }
+  if(!chats[openChatGroupId]) chats[openChatGroupId]=[];
+  const msg = { from: me.username, text: txt || '', time: timeNow() };
+  if(chatImagePending){ msg.image = chatImagePending; chatImagePending = null; }
   chats[openChatGroupId].push(msg);
   saveChats(chats);
-  chatInput.value = '';
+  chatInput.value='';
   renderChat();
 }
 
-/* send image via input */
-let chatPendingImage = null;
+/* send image: handle input file -> dataURL -> attach to next message immediately */
+let chatImagePending = null;
 chatImageInput.addEventListener('change', (e)=>{
   const f = e.target.files[0];
   if(!f) return;
-  const me = getCurrentUser();
-  if(!me) return alert('Bạn cần đăng nhập.');
-  if(!openChatGroupId) return alert('Mở chat nhóm trước khi gửi ảnh.');
   const reader = new FileReader();
   reader.onload = ev => {
     const data = ev.target.result;
+    // if chat open and user is member, send as message with image
+    if(!openChatGroupId) { alert('Mở chat nhóm trước khi gửi ảnh.'); chatImageInput.value=''; return; }
+    const me = getCurrentUser();
+    if(!me) { alert('Bạn phải đăng nhập.'); chatImageInput.value=''; return; }
     const chats = getChats();
     if(!chats[openChatGroupId]) chats[openChatGroupId] = [];
-    chats[openChatGroupId].push({ from: me.username, text: '', image: data, time: timeNow() });
+    chats[openChatGroupId].push({ from: me.username, text:'', image: data, time: timeNow() });
     saveChats(chats);
-    chatImageInput.value = '';
+    chatImageInput.value='';
     renderChat();
   };
   reader.readAsDataURL(f);
 });
 
-/* ========= Search groups (partial match) ========= */
+/* ---------- Search groups (partial match) ---------- */
 searchBtn.addEventListener('click', ()=> {
   const q = (searchInput.value||'').trim().toLowerCase();
   if(!q) return alert('Nhập từ khóa tìm nhóm.');
@@ -543,38 +537,40 @@ searchBtn.addEventListener('click', ()=> {
   clearSearch.style.display = 'inline-block';
 });
 clearSearch.addEventListener('click', ()=> {
-  searchInput.value = '';
+  searchInput.value='';
   renderAll();
-  clearSearch.style.display = 'none';
+  clearSearch.style.display='none';
 });
-searchInput.addEventListener('keydown',(e)=> { if(e.key === 'Enter') searchBtn.click(); });
+searchInput.addEventListener('keydown',(e)=>{ if(e.key==='Enter') searchBtn.click(); });
 
-
-/* ========= Render combined ========= */
+/* ---------- Render all combined ---------- */
 function renderAll(){
   renderSuggested();
   renderGroups();
 }
 
-/* ========= Init: ensure keys exist and render ========= */
+/* ---------- Init ---------- */
+// Ensure groups key exists (we purposely do NOT prefill default groups)
 if(!localStorage.getItem('groups')) saveGroups([]);
-if(!localStorage.getItem('groupChats')) saveChats({});
+
+// ensure join requests present
 if(!localStorage.getItem('groupJoinRequests')) saveJoinRequests([]);
+
+// ensure chats object exists
+if(!localStorage.getItem('groupChats')) saveChats({});
+
 renderAll();
 
-/* modal click outside to close */
+/* modal close on click outside */
 document.querySelectorAll('.backdrop').forEach(b=>{
   b.addEventListener('click', e=>{
-    if(e.target === b) b.style.display = 'none';
+    if(e.target === b) b.style.display='none';
   });
 });
 
-/* Expose helpers for debugging if needed */
-window._renderGroups = renderAll;
-window._getGroups = getGroups;
-window._getChats = getChats;
+/* Expose for debug */
+window._groups_refresh = renderAll;
 
 </script>
 </body>
 </html>
-
