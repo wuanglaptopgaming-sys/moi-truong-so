@@ -307,17 +307,25 @@ submitLogin.addEventListener('click', ()=>{
 });
 
 /* ---------- Navigation ---------- */
-function resetNav(){
+function renderNav(){
+  const username = localStorage.getItem('username');
+  if(!username){ resetNav(); return; }
+  const users = getUsers();
+  const me = users.find(u=>u.username === username);
+  const avatar = (me && me.avatar) ? me.avatar : DEFAULT_AVATAR;
   navEl.innerHTML = `
     <a href="community.html">Cộng đồng</a>
-<a href="groups.html">Nhóm học tập</a>
-
-    <button id="btn-signup">Đăng ký</button>
-    <button id="btn-login" class="btn-primary">Đăng nhập</button>
+    <a href="groups.html">Nhóm học tập</a>
+    <img id="navAvatar" src="${avatar}" alt="avatar" style="width:36px;height:36px;border-radius:50%;object-fit:cover;cursor:pointer;margin-left:6px">
+    <span style="margin-left:8px">Xin chào, <strong id="nav-user">${username}</strong></span>
+    <button id="logoutBtn" class="link" style="margin-left:8px">Đăng xuất</button>
   `;
-  // rebind
-  document.getElementById('btn-login').addEventListener('click', ()=> { modalLogin.style.display='block'; modalSignup.style.display='none'; });
-  document.getElementById('btn-signup').addEventListener('click', ()=> { modalSignup.style.display='block'; modalLogin.style.display='none'; });
+  $('#logoutBtn').addEventListener('click', ()=>{
+    localStorage.removeItem('username');
+    renderNav();
+  });
+  $('#navAvatar').addEventListener('click', ()=>{ userPanel.classList.add('open'); showUserInfo(); });
+  document.getElementById('nav-user').addEventListener('click', ()=>{ userPanel.classList.add('open'); showUserInfo(); });
 }
 
 function renderNav(){
