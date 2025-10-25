@@ -135,16 +135,23 @@
         <div id="chatMeta" style="font-size:12px;opacity:0.9"></div>
       </div>
     </div>
-    <div class="chat-controls">
-      <label style="cursor:pointer">📷<input id="chatImageInput" type="file" accept="image/*" style="display:none"></label>
+       <div class="chat-controls">
       <button id="closeChat" class="small ghost">Đóng</button>
     </div>
   </div>
+
   <div id="chatBody" class="chat-body"></div>
+
   <div class="chat-input">
     <input id="chatInput" placeholder="Gửi tin nhắn...">
+    <!-- nút chọn file nằm cạnh nút gửi, multiple cho phép chọn nhiều file -->
+    <label class="small ghost" style="cursor:pointer;padding:6px 10px;border-radius:8px;display:inline-flex;align-items:center;gap:6px;">
+      📎
+      <input id="chatFileInput" type="file" accept="*/*" multiple style="display:none">
+    </label>
     <button id="chatSend">Gửi</button>
   </div>
+
 </div>
 
 <script>
@@ -191,7 +198,7 @@ const chatBody = document.getElementById('chatBody');
 const chatInput = document.getElementById('chatInput');
 const chatSend = document.getElementById('chatSend');
 const closeChat = document.getElementById('closeChat');
-const chatImageInput = document.getElementById('chatImageInput');
+const chatFileInput = document.getElementById('chatFileInput');
 
 /* ---------- State ---------- */
 let groups = getGroups();
@@ -454,9 +461,35 @@ function renderChat(){
     const bubble = el('div','bubble' + ((m.from === (me && me.username)) ? ' me' : ''));
     bubble.innerHTML = `<div style="font-size:13px;margin-bottom:6px"><strong>${escapeHtml(m.from)}</strong> <span style="font-size:11px;color:var(--muted);margin-left:8px">${escapeHtml(m.time)}</span></div>`;
     bubble.innerHTML += `<div>${escapeHtml(m.text||'')}</div>`;
+       // Hiển thị file / ảnh / video (hỗ trợ 2 dạng: m.image cũ và m.fileData mới)
     if(m.image){
+      // backward-compat: tin nhắn cũ dùng key image
       bubble.innerHTML += `<div><img src="${m.image}" alt="image"></div>`;
     }
+    if(m.fileData){
+      const type = m.fileType || '';
+      const name = m.fileName || 'file';
+      const sizeKB = m.fileSize ? (m.fileSize/1024).toFixed(1) + ' KB' : '';
+      if(type.startsWith('image/')){
+        bubble.innerHTML += `<div><img src="${m.fileData}" alt="${escapeHtml(name)}" style="max-width:260px;border-radius:8px;margin-top:8px"></div>`;
+      } else if(type.startsWith('video/')){
+        bubble.innerHTML += `<div style="margin-top:8px"><video controls style="max-width:320px;border-radius:8px"><source src="${m.fileData}" type="${escapeHtml(type)}">Trình duyệt không hỗ trợ video</video></div>`;
+      } else {
+        // file khác: thẻ bo góc đẹp
+        bubble.innerHTML += `
+          <div style="margin-top:8px;background:#fff;border:1px solid #e6eaf5;padding:10px;border-radius:10px;display:flex;flex-direction:column;gap:6px;align-items:flex-start">
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="font-size:20px">📎</div>
+              <div style="display:flex;flex-direction:column">
+                <div style="font-weight:600">${escapeHtml(name)}</div>
+                <div style="font-size:12px;color:var(--muted)">${sizeKB}</div>
+              </div>
+            </div>
+            <a href="${m.fileData}" download="${escapeHtml(name)}" style="margin-top:6px;padding:6px 8px;border-radius:8px;background:var(--accent);color:#fff;text-decoration:none;font-size:13px">⬇️ Tải xuống</a>
+          </div>`;
+      }
+    }
+
     // delete control (sender or owner)
     if(me && (m.from === me.username || getGroups().find(g=>g.id===openChatGroupId)?.owner === me.username)){
       const delBtn = el('button','small ghost');
@@ -491,28 +524,58 @@ chatSend.addEventListener('click', sendChat);
 chatInput.addEventListener('keydown',(e)=>{ if(e.key==='Enter') sendChat(); });
 function sendChat(){
   const txt = chatInput.value.trim();
-  if(!txt && !chatImagePending) return;
+  if(!txt) {
+    // nếu không có text, chặn (file gửi qua input file, không qua send)
+    return;
+  }
   if(!openChatGroupId) return alert('Mở 1 nhóm để gửi tin nhắn.');
   const me = getCurrentUser();
   if(!me) return alert('Bạn cần đăng nhập.');
   const chats = getChats();
-  if(!chats[openChatGroupId]) chats[openChatGroupId]=[];
-  const msg = { from: me.username, text: txt || '', time: timeNow() };
-  if(chatImagePending){ msg.image = chatImagePending; chatImagePending = null; }
+  if(!chats[openChatGroupId]) chats[openChatGroupId] = [];
+  const msg = { from: me.username, text: txt, time: timeNow() };
   chats[openChatGroupId].push(msg);
   saveChats(chats);
-  chatInput.value='';
+  chatInput.value = '';
   renderChat();
 }
 
+
 /* send image: handle input file -> dataURL -> attach to next message immediately */
-let chatImagePending = null;
-chatImageInput.addEventListener('change', (e)=>{
-  const f = e.target.files[0];
-  if(!f) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    const data = ev.target.result;
+/* Gửi file (ảnh / video / tài liệu...) — mỗi file thành 1 tin nhắn riêng */
+chatFileInput.addEventListener('change', (e)=>{
+  const files = Array.from(e.target.files || []);
+  if(!files.length) return;
+  const me = getCurrentUser();
+  if(!me) { alert('Bạn cần đăng nhập.'); chatFileInput.value=''; return; }
+  if(!openChatGroupId) { alert('Mở chat nhóm trước khi gửi file.'); chatFileInput.value=''; return; }
+
+  files.forEach(file=>{
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const data = ev.target.result; // dataURL
+      const chats = getChats();
+      if(!chats[openChatGroupId]) chats[openChatGroupId] = [];
+      // mỗi file là 1 tin nhắn
+      chats[openChatGroupId].push({
+        from: me.username,
+        text: '',
+        fileName: file.name,
+        fileType: file.type || '',
+        fileSize: file.size || 0,
+        fileData: data,
+        time: timeNow()
+      });
+      saveChats(chats);
+      renderChat();
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // reset input
+  chatFileInput.value = '';
+});
+
     // if chat open and user is member, send as message with image
     if(!openChatGroupId) { alert('Mở chat nhóm trước khi gửi ảnh.'); chatImageInput.value=''; return; }
     const me = getCurrentUser();
@@ -574,4 +637,5 @@ window._groups_refresh = renderAll;
 </script>
 </body>
 </html>
+
 
