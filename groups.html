@@ -549,11 +549,6 @@ clearSearch.addEventListener('click', ()=> {
 });
 searchInput.addEventListener('keydown',(e)=> { if(e.key === 'Enter') searchBtn.click(); });
 
-/* ========= Storage getters/setters for chats/requests ========= */
-function getChats(){ return JSON.parse(localStorage.getItem('groupChats')||'{}'); }
-function saveChats(obj){ localStorage.setItem('groupChats', JSON.stringify(obj)); }
-function getJoinRequests(){ return JSON.parse(localStorage.getItem('groupJoinRequests')||'[]'); }
-function saveJoinRequests(arr){ localStorage.setItem('groupJoinRequests', JSON.stringify(arr)); }
 
 /* ========= Render combined ========= */
 function renderAll(){
@@ -582,3 +577,4 @@ window._getChats = getChats;
 </script>
 </body>
 </html>
+
