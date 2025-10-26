@@ -76,30 +76,60 @@
 </main>
 
 <!-- Bảng thông tin người dùng -->
-<div id="userPanel">
-  <header><span>Thông tin người dùng</span><button id="closeUserPanel">&times;</button></header>
+<!-- User Panel (off-canvas right) -->
+<div id="userPanel" aria-hidden="true">
+  <header>
+    <span>Thông tin người dùng</span>
+    <button id="closeUserPanel" aria-label="Đóng">&times;</button>
+  </header>
+
   <div class="user-info">
     <div class="avatar-area">
-      <img id="avatarPreview" alt="avatar">
+      <img id="avatarPreview" alt="Avatar">
+      <div class="small-note">Ảnh đại diện</div>
       <input id="infoAvatar" type="file" accept="image/*" style="display:none">
-      <button id="changeAvatarBtn">Đổi ảnh</button>
+      <div style="margin-top:8px">
+        <button id="changeAvatarBtn" style="padding:8px 10px;border-radius:8px;border:0;background:#eee;cursor:pointer">Đổi ảnh</button>
+      </div>
     </div>
-    <label>Tên</label><input id="infoName" type="text" disabled>
-    <label>ID</label><input id="infoID" type="text" disabled>
-    <label>Ngày sinh</label><input id="infoDOB" type="date">
-    <label>Email</label><input id="infoEmail" type="email">
-    <label>Mô tả</label><textarea id="infoDesc"></textarea>
-    <button id="saveUserInfo">Lưu</button>
+
+    <label>Tên người dùng</label>
+    <input id="infoName" type="text" disabled>
+
+    <label>ID</label>
+    <input id="infoID" type="text" disabled>
+
+    <label>Ngày sinh</label>
+    <input id="infoDOB" type="date">
+
+    <label>Email</label>
+    <input id="infoEmail" type="email" placeholder="you@example.com">
+
+    <label>Mô tả</label>
+    <textarea id="infoDesc" placeholder="Giới thiệu về bản thân..."></textarea>
+
+    <button id="saveUserInfo" class="save-btn">Lưu thông tin</button>
 
     <div class="friend-section">
-      <input id="friendSearchSidebar" placeholder="Tìm bạn...">
-      <button id="friendSearchBtn">Tìm</button>
-      <button id="friendMailBtn">📩</button>
-      <div id="friendInvites" style="display:none"></div>
-      <div id="friendListArea"></div>
+      <h4 style="margin:0 0 8px">Kết bạn</h4>
+      <div class="friend-actions">
+        <input id="friendSearchSidebar" placeholder="Tìm theo tên hoặc ID...">
+        <button id="friendSearchBtn">Tìm</button>
+        <button id="friendMailBtn" title="Hộp thư lời mời" style="width:40px;border-radius:8px;background:var(--accent);color:#fff;border:0">📩</button>
+      </div>
+
+      <div id="friendInvites" style="display:none;margin-top:10px">
+        <!-- invites inserted here -->
+      </div>
+
+      <div class="friend-list" id="friendListArea" style="margin-top:10px">
+        <!-- friends inserted here -->
+      </div>
     </div>
   </div>
 </div>
+
+
 
 <!-- Modal đăng nhập / đăng ký -->
 <div id="modalLogin" style="display:none">
@@ -214,3 +244,4 @@ init();
 </script>
 </body>
 </html>
+
