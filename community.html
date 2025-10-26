@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -5,271 +6,99 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cộng đồng học tập</title>
 <style>
-:root{
-  --accent:#0072ff;
-  --bg:#f5f8ff;
-  --card:#fff;
-  --text:#222;
-  --muted:#6b7280;
-}
-body{
-  font-family: "Segoe UI", sans-serif;
-  margin:0;padding:0;
-  background:var(--bg);color:var(--text);
-}
-header{
-  background:var(--card);
-  padding:12px 24px;
-  display:flex;justify-content:space-between;align-items:center;
-  border-bottom:1px solid #dbe3f4;position:sticky;top:0;z-index:20;
-}
-header .brand{display:flex;align-items:center;gap:12px;}
-.logo{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;
-  background:linear-gradient(135deg,#00c6ff,#0072ff);color:white;font-weight:700;}
-header nav a{margin-left:14px;font-weight:600;text-decoration:none;color:var(--text);}
-header nav a:hover{color:var(--accent);}
-.post-box{
-  background:var(--card);max-width:600px;margin:20px auto;padding:18px;border-radius:12px;
-  box-shadow:0 2px 8px rgba(0,0,0,0.07);
-}
-.post-box textarea{
-  width:100%;border:none;resize:none;padding:10px;border-radius:8px;background:#f0f4ff;
-}
-.post-box input[type=file]{display:none;}
-.post-box label{
-  display:inline-block;margin-top:8px;padding:6px 12px;background:var(--accent);
-  color:white;border-radius:6px;cursor:pointer;
-}
-.post-box button{
-  margin-top:10px;padding:8px 16px;background:var(--accent);color:white;
-  border:none;border-radius:8px;cursor:pointer;
-}
-.post{
-  background:var(--card);max-width:600px;margin:14px auto;padding:16px;border-radius:12px;
-  box-shadow:0 1px 6px rgba(0,0,0,0.06);
-}
-.post-header{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
-.avatar{width:45px;height:45px;border-radius:50%;object-fit:cover;}
-.avatar-small{width:28px;height:28px;border-radius:50%;object-fit:cover;}
-.post-img,.comment-img{max-width:100%;border-radius:12px;margin-top:8px;cursor:pointer;}
-.post-img{max-height:280px;object-fit:cover;}
-.post-actions{margin-top:6px;display:flex;gap:12px;}
-.post-actions button{background:transparent;border:none;color:var(--accent);cursor:pointer;}
-.comment-box{margin-top:10px;border-top:1px solid #eee;padding-top:10px;}
-.comment{display:flex;gap:8px;margin-top:10px;}
-.comment-content{background:#f3f6ff;border-radius:10px;padding:6px 10px;flex:1;}
-.comment-img{max-width:150px;border-radius:8px;}
-.delete-post,.delete-cmt{border:none;background:none;color:red;cursor:pointer;}
-.like-cmt{border:none;background:none;cursor:pointer;margin-top:4px;}
-#imgView{position:fixed;inset:0;background:rgba(0,0,0,0.8);display:none;align-items:center;justify-content:center;}
-#imgView img{max-width:90%;max-height:90%;border-radius:12px;}
+body {font-family: Arial, sans-serif; background: #f6f9ff; margin: 0; padding: 0;}
+header {background: #1976d2; color: #fff; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center;}
+h1 {margin: 0; font-size: 22px;}
+.container {max-width: 800px; margin: 20px auto; background: white; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); padding: 20px;}
+#postForm {display: flex; flex-direction: column; gap: 10px;}
+#postForm textarea {width: 100%; height: 100px; resize: none; padding: 8px;}
+#postForm input[type=file] {padding: 6px;}
+.post {border-top: 1px solid #ddd; padding: 12px 0;}
+.files-area img {max-width: 100%; border-radius: 8px; margin-top: 6px;}
+.files-area video {max-width: 100%; border-radius: 8px; margin-top: 6px;}
+.files-area a {display: block; margin-top: 6px; color: #1976d2; text-decoration: none;}
+.comment-section {margin-top: 10px; padding-left: 20px;}
+.comment {background: #f0f4ff; margin-top: 6px; padding: 6px 10px; border-radius: 8px;}
+.comment .files-area img, .comment .files-area video {max-width: 90%; margin-top: 4px;}
 </style>
 </head>
 <body>
-
 <header>
-  <div class="brand">
-    <div class="logo">ED</div>
-    <strong>Cộng đồng học tập</strong>
-  </div>
-  <nav>
-    <a href="index.html">Trang chủ</a>
-  </nav>
+<h1>Cộng đồng học tập</h1>
 </header>
-
-<div class="post-box">
-  <textarea id="postText" placeholder="Bạn đang nghĩ gì?"></textarea>
-  <label for="postImg">📷 Thêm ảnh</label>
-  <input type="file" id="postImg" accept="image/*">
-  <button id="postBtn">Đăng bài</button>
+<div class="container">
+  <form id="postForm">
+    <textarea id="postContent" placeholder="Chia sẻ điều gì đó..."></textarea>
+    <input id="postFiles" type="file" multiple accept="image/*,video/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip,.rar,.txt">
+    <button type="button" id="submitPost">Đăng bài</button>
+  </form>
+  <div id="posts"></div>
 </div>
-
-<div id="postList"></div>
-
-<div id="imgView"><img></div>
-
 <script>
-const DEFAULT_AVATAR = "https://i.imgur.com/PHv4T6B.png";
-function getUsers(){return JSON.parse(localStorage.getItem("users")||"[]");}
-function getPosts(){return JSON.parse(localStorage.getItem("posts")||"[]");}
-function savePosts(p){localStorage.setItem("posts",JSON.stringify(p));}
-function getInvites(){return JSON.parse(localStorage.getItem("invites")||"[]");}
-function saveInvites(p){localStorage.setItem("invites",JSON.stringify(p));}
-function now(){return new Date().toLocaleString("vi-VN",{hour:"2-digit",minute:"2-digit",day:"2-digit",month:"2-digit"});}
-function getCurrentUser(){
-  const name=localStorage.getItem("username");
-  if(!name)return null;
-  return getUsers().find(u=>u.username===name)||null;
-}
+const postsDiv = document.getElementById('posts');
+const postBtn = document.getElementById('submitPost');
 
-// ====== Đăng bài ======
-document.getElementById("postBtn").onclick=()=>{
-  const user=getCurrentUser();
-  if(!user){alert("Bạn chưa đăng nhập!");return;}
-  const text=document.getElementById("postText").value.trim();
-  const file=document.getElementById("postImg").files[0];
-  if(!text && !file)return;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    const posts=getPosts();
-    posts.unshift({
-      user:user.username,
-      avatar:user.avatar||DEFAULT_AVATAR,
-      text,
-      img:e.target.result||"",
-      time:now(),
-      likes:[],
-      comments:[]
+function getPosts(){return JSON.parse(localStorage.getItem('posts')||'[]');}
+function savePosts(p){localStorage.setItem('posts',JSON.stringify(p));}
+
+function renderPosts(){
+  postsDiv.innerHTML='';
+  const posts=getPosts().reverse();
+  posts.forEach((p,idx)=>{
+    const div=document.createElement('div');div.className='post';
+    div.innerHTML='<p>'+p.text+'</p>';
+    const farea=document.createElement('div');farea.className='files-area';
+    (p.files||[]).forEach(f=>{
+      if(f.type.startsWith('image/')){
+        const img=document.createElement('img');img.src=f.url;farea.appendChild(img);
+      } else if(f.type.startsWith('video/')){
+        const vid=document.createElement('video');vid.src=f.url;vid.controls=true;farea.appendChild(vid);
+      } else {
+        const a=document.createElement('a');a.href=f.url;a.download=f.name;a.textContent='📎 '+f.name;farea.appendChild(a);
+      }
     });
-    savePosts(posts);
-    document.getElementById("postText").value="";
-    document.getElementById("postImg").value="";
-    render();
-  };
-  if(file)reader.readAsDataURL(file); else reader.onload({target:{result:""}});
-};
-
-// ====== Hiển thị bài ======
-function render(){
-  const posts=getPosts();
-  const container=document.getElementById("postList");
-  container.innerHTML="";
-  const me=getCurrentUser();
-  posts.forEach((p,i)=>{
-    const liked = me && p.likes && p.likes.includes(me.username);
-    container.innerHTML+=`
-    <div class="post">
-      <div class="post-header">
-        <img class="avatar" src="${p.avatar||DEFAULT_AVATAR}" onclick="showUserPopup('${p.user}')">
-        <div><b>${p.user}</b><div class="post-time">${p.time}</div></div>
-        <button class="delete-post" onclick="deletePost(${i})">🗑️</button>
-      </div>
-      <p>${p.text||""}</p>
-      ${p.img?`<img class="post-img" src="${p.img}" onclick="viewImg('${p.img}')">`:""}
-      <div class="post-actions">
-        <button onclick="toggleLike(${i})">${liked?"💙":"🤍"} ${p.likes?p.likes.length:0}</button>
-      </div>
-      <div class="comment-box">
-        <input id="cmt-${i}" placeholder="Viết bình luận...">
-        <button onclick="addComment(${i})">Gửi</button>
-        <label style="cursor:pointer;">📷<input type="file" accept="image/*" style="display:none" onchange="addCommentImg(${i},this)"></label>
-      </div>
-      <div class="comments">
-        ${p.comments.map((c,ci)=>`
-          <div class="comment">
-            <img class="avatar-small" src="${c.avatar||DEFAULT_AVATAR}" onclick="showUserPopup('${c.user}')">
-            <div class="comment-content">
-              <b>${c.user}</b> <span class="comment-time">${c.time}</span>
-              <div>${c.text||""}</div>
-              ${c.img?`<img class="comment-img" src="${c.img}" onclick="viewImg('${c.img}')">`:""}
-              <button class="like-cmt" onclick="likeComment(${i},${ci})">👍 ${c.likes||0}</button>
-              <button class="delete-cmt" onclick="deleteComment(${i},${ci})">✖</button>
-            </div>
-          </div>`).join("")}
-      </div>
-    </div>`;
+    div.appendChild(farea);
+    const cform=document.createElement('div');
+    cform.innerHTML='<div class="comment-section"><input type="file" class="commentFiles" multiple accept="image/*,video/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip,.rar,.txt"><input type="text" class="commentText" placeholder="Viết bình luận..."><button class="addComment">Gửi</button><div class="comments"></div></div>';
+    div.appendChild(cform);
+    postsDiv.appendChild(div);
+    renderComments(idx, div.querySelector('.comments'));
+    div.querySelector('.addComment').onclick=()=>{
+      const txt=div.querySelector('.commentText').value.trim();
+      const files=div.querySelector('.commentFiles').files;
+      if(!txt && files.length==0)return;
+      const fileArr=[];
+      for(let f of files){fileArr.push({name:f.name,type:f.type,url:URL.createObjectURL(f)});}
+      p.comments.push({text:txt,files:fileArr});
+      const arr=getPosts();arr[posts.length-1-idx]=p;savePosts(arr);renderPosts();
+    };
   });
 }
-
-// ====== Hành động ======
-function toggleLike(i){
-  const user=getCurrentUser();
-  if(!user)return alert("Bạn chưa đăng nhập!");
-  const posts=getPosts();
-  const likes=posts[i].likes||[];
-  const idx=likes.indexOf(user.username);
-  if(idx===-1)likes.push(user.username); else likes.splice(idx,1);
-  posts[i].likes=likes; savePosts(posts); render();
+function renderComments(postIndex, container){
+  const posts=getPosts();const post=posts[postIndex];container.innerHTML='';
+  (post.comments||[]).forEach(c=>{
+    const d=document.createElement('div');d.className='comment';d.innerHTML='<p>'+c.text+'</p>';
+    const farea=document.createElement('div');farea.className='files-area';
+    (c.files||[]).forEach(f=>{
+      if(f.type.startsWith('image/')){const img=document.createElement('img');img.src=f.url;farea.appendChild(img);}
+      else if(f.type.startsWith('video/')){const vid=document.createElement('video');vid.src=f.url;vid.controls=true;farea.appendChild(vid);}
+      else {const a=document.createElement('a');a.href=f.url;a.download=f.name;a.textContent='📎 '+f.name;farea.appendChild(a);}
+    });
+    d.appendChild(farea);
+    container.appendChild(d);
+  });
 }
-function addComment(i){
-  const user=getCurrentUser();
-  if(!user)return alert("Bạn chưa đăng nhập!");
-  const text=document.getElementById("cmt-"+i).value.trim();
-  if(!text)return;
-  const posts=getPosts();
-  posts[i].comments.push({user:user.username,avatar:user.avatar||DEFAULT_AVATAR,text,time:now(),likes:0});
-  savePosts(posts);render();
-}
-function addCommentImg(i,input){
-  const user=getCurrentUser();
-  if(!user)return alert("Bạn chưa đăng nhập!");
-  const file=input.files[0];
-  const reader=new FileReader();
-  reader.onload=e=>{
-    const posts=getPosts();
-    posts[i].comments.push({user:user.username,avatar:user.avatar||DEFAULT_AVATAR,img:e.target.result,text:"",time:now(),likes:0});
-    savePosts(posts);render();
-  };
-  reader.readAsDataURL(file);
-}
-function deletePost(i){
-  const user=getCurrentUser();const posts=getPosts();
-  if(!user||posts[i].user!==user.username)return alert("Bạn chỉ có thể xóa bài của mình.");
-  posts.splice(i,1);savePosts(posts);render();
-}
-function deleteComment(pi,ci){
-  const user=getCurrentUser();const posts=getPosts();
-  if(!user||posts[pi].comments[ci].user!==user.username)return alert("Bạn chỉ có thể xóa bình luận của mình.");
-  posts[pi].comments.splice(ci,1);savePosts(posts);render();
-}
-function likeComment(pi,ci){
-  const posts=getPosts();
-  posts[pi].comments[ci].likes=(posts[pi].comments[ci].likes||0)+1;
-  savePosts(posts);render();
-}
-function viewImg(src){
-  const box=document.getElementById("imgView");
-  box.style.display="flex";
-  box.querySelector("img").src=src;
-}
-document.getElementById("imgView").onclick=()=>document.getElementById("imgView").style.display="none";
-
-// ====== Popup người dùng ======
-function showUserPopup(username){
-  const user=getUsers().find(u=>u.username===username);
-  if(!user)return alert("Không tìm thấy người dùng.");
-  const me=getCurrentUser();
-  const box=document.createElement("div");
-  box.style.position="fixed";
-  box.style.inset="0";
-  box.style.background="rgba(0,0,0,0.5)";
-  box.style.display="flex";
-  box.style.alignItems="center";
-  box.style.justifyContent="center";
-  box.innerHTML=`
-    <div style="background:white;border-radius:12px;padding:20px;width:300px;box-shadow:0 6px 20px rgba(0,0,0,0.3);text-align:center;">
-      <img src="${user.avatar||DEFAULT_AVATAR}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;">
-      <h3>${user.username}</h3>
-      <p style="font-size:14px;color:#555;">ID: ${user.id||'(Ẩn)'}</p>
-      <p style="font-size:13px;color:#777;">${user.desc||'Không có mô tả.'}</p>
-      ${me && me.username!==user.username ? `<button id="inviteBtn" style="padding:8px 12px;border:0;background:#0072ff;color:#fff;border-radius:8px;cursor:pointer;">Gửi lời mời kết bạn</button>`:''}
-      <div style="margin-top:10px;"><button id="closePopup" style="border:0;background:#ccc;border-radius:6px;padding:6px 12px;cursor:pointer;">Đóng</button></div>
-    </div>`;
-  document.body.appendChild(box);
-
-  box.querySelector("#closePopup").onclick=()=>box.remove();
-
-  const btn=box.querySelector("#inviteBtn");
-  if(btn){
-    btn.onclick=()=>{
-      const invites=getInvites();
-      if(invites.some(i=>i.to===user.username && i.fromName===me.username)){
-        alert("Bạn đã gửi lời mời rồi!");return;
-      }
-      invites.push({to:user.username,fromName:me.username,fromId:me.id,fromAvatar:me.avatar||DEFAULT_AVATAR});
-      saveInvites(invites);
-      alert("Đã gửi lời mời kết bạn!");
-      box.remove();
-    };
-  }
-}
-
-
-  
-render();
+postBtn.onclick=()=>{
+  const text=document.getElementById('postContent').value.trim();
+  const files=document.getElementById('postFiles').files;
+  if(!text && files.length==0)return alert('Vui lòng nhập nội dung hoặc chọn tệp');
+  const fileArr=[];
+  for(let f of files){fileArr.push({name:f.name,type:f.type,url:URL.createObjectURL(f)});}
+  const posts=getPosts();posts.push({text,files:fileArr,comments:[]});savePosts(posts);
+  document.getElementById('postContent').value='';document.getElementById('postFiles').value='';
+  renderPosts();
+};
+renderPosts();
 </script>
-
 </body>
 </html>
-
-
