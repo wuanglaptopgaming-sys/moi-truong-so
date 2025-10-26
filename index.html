@@ -37,15 +37,38 @@
   .intro-image{flex:1;display:flex;align-items:center;justify-content:center}
   .intro-image img{width:100%;max-width:520px;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,0.08)}
 
-  #userPanel{position:fixed;top:0;right:-380px;width:380px;height:100%;background:var(--card);border-left:1px solid #e6eef8;box-shadow:-8px 0 30px rgba(2,6,23,0.08);transition:right .28s ease;z-index:60;display:flex;flex-direction:column}
-  #userPanel.open{right:0}
+   /* Sidebar user panel (off-canvas) */
+  #userPanel {
+    position: fixed; top: 0; right: -380px; width: 380px; height: 100%; background: var(--card);
+    border-left: 1px solid #e6eef8; box-shadow: -8px 0 30px rgba(2,6,23,0.08); transition: right .28s ease; z-index:60;
+    display:flex;flex-direction:column;
+  }
+  #userPanel.open { right: 0; }
   #userPanel header{background:var(--accent);color:#fff;padding:14px;display:flex;justify-content:space-between;align-items:center}
+  #userPanel header button{background:transparent;border:0;color:#fff;font-size:20px;cursor:pointer}
   .user-info{padding:16px;overflow-y:auto;flex:1}
+  .user-info label{display:block;margin-top:10px;font-weight:700;color:#233}
+  .user-info input[type="text"], .user-info input[type="email"], .user-info textarea{width:100%;padding:8px;border-radius:8px;border:1px solid #e6eef8}
+  .save-btn{margin-top:12px;background:var(--accent);color:#fff;border:0;padding:10px 14px;border-radius:8px;cursor:pointer}
+
+  /* avatar */
   .avatar-area{text-align:center;margin-bottom:8px}
-  .avatar-area img{width:110px;height:110px;border-radius:50%;object-fit:cover;border:4px solid transparent;background:linear-gradient(white,white) padding-box,linear-gradient(135deg,#6ce0ff,#5d74ff) border-box}
+  .avatar-area img{width:110px;height:110px;border-radius:50%;object-fit:cover;border:4px solid transparent;background:linear-gradient(white,white) padding-box, linear-gradient(135deg,#6ce0ff,#5d74ff) border-box}
+  .avatar-area .small-note{font-size:13px;color:var(--muted);margin-top:6px}
+
+  /* friend section */
   .friend-section{padding:12px;border-top:1px solid #eef5ff}
+  .friend-actions{display:flex;gap:8px;align-items:center}
+  .friend-actions input{flex:1;padding:8px;border-radius:8px;border:1px solid #e6eef8}
+  .friend-actions button{padding:8px 10px;border-radius:8px;border:0;background:var(--accent);color:#fff;cursor:pointer}
+  .friend-list{margin-top:12px}
   .friend-item{display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px;background:#f8fafc;margin-bottom:8px}
+  .friend-item img{width:40px;height:40px;border-radius:50%;object-fit:cover}
   .invite-row{display:flex;justify-content:space-between;align-items:center;padding:8px;margin-bottom:8px;border-radius:8px;background:#f8fafc}
+
+  /* small responsive */
+  @media(max-width:880px){ .intro-section{flex-direction:column;padding:28px} .columns{flex-direction:column;padding:24px} #userPanel{width:100%;} }
+
 </style>
 </head>
 <body>
@@ -86,19 +109,44 @@
     <div class="avatar-area">
       <img id="avatarPreview" alt="Avatar">
       <div class="small-note">Ảnh đại diện</div>
-    <label>Tên</label><input id="infoName" type="text" disabled>
-    <label>ID</label><input id="infoID" type="text" disabled>
-    <label>Ngày sinh</label><input id="infoDOB" type="date">
-    <label>Email</label><input id="infoEmail" type="email">
-    <label>Mô tả</label><textarea id="infoDesc"></textarea>
-    <button id="saveUserInfo">Lưu</button>
+      <input id="infoAvatar" type="file" accept="image/*" style="display:none">
+      <div style="margin-top:8px">
+        <button id="changeAvatarBtn" style="padding:8px 10px;border-radius:8px;border:0;background:#eee;cursor:pointer">Đổi ảnh</button>
+      </div>
+    </div>
+
+    <label>Tên người dùng</label>
+    <input id="infoName" type="text" disabled>
+
+    <label>ID</label>
+    <input id="infoID" type="text" disabled>
+
+    <label>Ngày sinh</label>
+    <input id="infoDOB" type="date">
+
+    <label>Email</label>
+    <input id="infoEmail" type="email" placeholder="you@example.com">
+
+    <label>Mô tả</label>
+    <textarea id="infoDesc" placeholder="Giới thiệu về bản thân..."></textarea>
+
+    <button id="saveUserInfo" class="save-btn">Lưu thông tin</button>
 
     <div class="friend-section">
-      <input id="friendSearchSidebar" placeholder="Tìm bạn...">
-      <button id="friendSearchBtn">Tìm</button>
-      <button id="friendMailBtn">📩</button>
-      <div id="friendInvites" style="display:none"></div>
-      <div id="friendListArea"></div>
+      <h4 style="margin:0 0 8px">Kết bạn</h4>
+      <div class="friend-actions">
+        <input id="friendSearchSidebar" placeholder="Tìm theo tên hoặc ID...">
+        <button id="friendSearchBtn">Tìm</button>
+        <button id="friendMailBtn" title="Hộp thư lời mời" style="width:40px;border-radius:8px;background:var(--accent);color:#fff;border:0">📩</button>
+      </div>
+
+      <div id="friendInvites" style="display:none;margin-top:10px">
+        <!-- invites inserted here -->
+      </div>
+
+      <div class="friend-list" id="friendListArea" style="margin-top:10px">
+        <!-- friends inserted here -->
+      </div>
     </div>
   </div>
 </div>
@@ -134,8 +182,14 @@
 
 <script>
 const $ = s=>document.querySelector(s);
-function getUsers(){return JSON.parse(localStorage.getItem('users')||'[]');}
-function saveUsers(a){localStorage.setItem('users',JSON.stringify(a));}
+const $$ = sel => document.querySelectorAll(sel);
+  
+function getUsers(){ return JSON.parse(localStorage.getItem('users')||'[]'); }
+function saveUsers(arr){ localStorage.setItem('users', JSON.stringify(arr)); }
+  
+function getInvites(){ return JSON.parse(localStorage.getItem('invites')||'[]'); }
+function saveInvites(arr){ localStorage.setItem('invites', JSON.stringify(arr)); }
+
 const DEFAULT_AVATAR='https://i.imgur.com/6VBx3io.png';
 const navEl=document.getElementById('nav');
 
@@ -145,9 +199,8 @@ function resetNav(){
     <a href="groups.html">Nhóm học tập</a>
     <button id="btn-signup">Đăng ký</button>
     <button id="btn-login" class="btn-primary">Đăng nhập</button>`;
-   document.getElementById("btn-login").onclick = () => modalLogin.style.display = 'block';
-  document.getElementById("btn-signup").onclick = () => modalSignup.style.display = 'block';
-
+  $('#btn-login').onclick=()=>modalLogin.style.display='block';
+  $('#btn-signup').onclick=()=>modalSignup.style.display='block';
 }
 
 function renderNav(){
@@ -217,4 +270,5 @@ init();
 </script>
 </body>
 </html>
+
 
