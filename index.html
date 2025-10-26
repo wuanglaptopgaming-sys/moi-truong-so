@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Môi Trường Số Học Tập</title>
+<title>Môi Trường Số Học Tập - Fix Bạn Bè</title>
 <style>
   :root{
     --accent:#0072ff; --accent-2:#00c6ff; --muted:#6b7280;
@@ -64,7 +64,9 @@
   .friend-list{margin-top:12px}
   .friend-item{display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px;background:#f8fafc;margin-bottom:8px}
   .friend-item img{width:40px;height:40px;border-radius:50%;object-fit:cover}
-  .invite-row{display:flex;justify-content:space-between;align-items:center;padding:8px;margin-bottom:8px;border-radius:8px;background:#f8fafc}
+  .invite-row{display:flex;justify-content:space-between;align-items:center;padding:8px;margin-bottom:8px;border-radius:8px;background:#fff;border:1px solid #eef5ff}
+
+  .badge{font-size:12px;background:#f1f5f9;padding:4px 8px;border-radius:999px;color:#334155;margin-left:8px}
 
   /* small responsive */
   @media(max-width:880px){ .intro-section{flex-direction:column;padding:28px} .columns{flex-direction:column;padding:24px} #userPanel{width:100%;} }
@@ -133,7 +135,7 @@
     <button id="saveUserInfo" class="save-btn">Lưu thông tin</button>
 
     <div class="friend-section">
-      <h4 style="margin:0 0 8px">Kết bạn</h4>
+      <h4 style="margin:0 0 8px">Kết bạn <span id="pendingBadge" class="badge" style="display:none"></span></h4>
       <div class="friend-actions">
         <input id="friendSearchSidebar" placeholder="Tìm theo tên hoặc ID...">
         <button id="friendSearchBtn">Tìm</button>
@@ -183,15 +185,25 @@
 <script>
 const $ = s=>document.querySelector(s);
 const $$ = sel => document.querySelectorAll(sel);
-  
+
 function getUsers(){ return JSON.parse(localStorage.getItem('users')||'[]'); }
 function saveUsers(arr){ localStorage.setItem('users', JSON.stringify(arr)); }
-  
+
 function getInvites(){ return JSON.parse(localStorage.getItem('invites')||'[]'); }
 function saveInvites(arr){ localStorage.setItem('invites', JSON.stringify(arr)); }
 
 const DEFAULT_AVATAR='https://i.imgur.com/6VBx3io.png';
 const navEl=document.getElementById('nav');
+
+/* --- Seed small demo users when none exist (helps testing) --- */
+(function seedIfEmpty(){
+  const u=getUsers();
+  if(u.length===0){
+    u.push({username:'alice',password:'password123',id:'#1001',avatar:'',dob:'1999-01-01',email:'alice@example.com',desc:'Sinh viên lớp 1',friends:[]});
+    u.push({username:'bob',password:'password123',id:'#1002',avatar:'',dob:'2000-02-02',email:'bob@example.com',desc:'Sinh viên lớp 2',friends:[]});
+    saveUsers(u);
+  }
+})();
 
 function resetNav(){
   navEl.innerHTML=`
@@ -205,7 +217,7 @@ function resetNav(){
 
 function renderNav(){
   const u=localStorage.getItem('username');
-  if(!u){resetNav();return;}
+  if(!u){resetNav();updatePendingBadge();return;}
   const users=getUsers(); const me=users.find(x=>x.username===u);
   const av=(me&&me.avatar)?me.avatar:DEFAULT_AVATAR;
   navEl.innerHTML=`
@@ -215,8 +227,9 @@ function renderNav(){
     <span>Xin chào, <strong id="nav-user">${u}</strong></span>
     <button id="logoutBtn">Đăng xuất</button>`;
   $('#logoutBtn').onclick=()=>{localStorage.removeItem('username');renderNav();};
-  $('#navAvatar').onclick=()=>{userPanel.classList.add('open');showUserInfo();};
-  $('#nav-user').onclick=()=>{userPanel.classList.add('open');showUserInfo();};
+  $('#navAvatar').onclick=()=>{userPanel.classList.add('open');showUserInfo();renderAllFriendUI();};
+  $('#nav-user').onclick=()=>{userPanel.classList.add('open');showUserInfo();renderAllFriendUI();};
+  updatePendingBadge();
 }
 
 const modalLogin=$('#modalLogin'),modalSignup=$('#modalSignup');
@@ -228,6 +241,7 @@ $('#toLoginFromSignup').onclick=()=>{modalSignup.style.display='none';modalLogin
 $('#submitSignup').onclick=()=>{
   const u=$('#signupUser').value.trim(),p=$('#signupPass').value;
   const err=$('#signupError');
+  err.style.display='none'; err.textContent='';
   if(!u||!p){err.textContent='Điền đủ thông tin';err.style.display='block';return;}
   if(p.length<8||p.length>16){err.textContent='Mật khẩu 8-16 ký tự';err.style.display='block';return;}
   const arr=getUsers();
@@ -238,6 +252,7 @@ $('#submitSignup').onclick=()=>{
 
 $('#submitLogin').onclick=()=>{
   const u=$('#loginUser').value.trim(),p=$('#loginPass').value;const err=$('#loginError');
+  err.style.display='none'; err.textContent='';
   const arr=getUsers();const f=arr.find(x=>x.username===u&&x.password===p);
   if(!f){err.textContent='Sai thông tin';err.style.display='block';return;}
   localStorage.setItem('username',u);modalLogin.style.display='none';renderNav();
@@ -265,10 +280,184 @@ $('#saveUserInfo').onclick=()=>{
   if(me){me.dob=$('#infoDOB').value;me.email=$('#infoEmail').value;me.desc=$('#infoDesc').value;saveUsers(arr);alert('Đã lưu!');}
 };
 
-function init(){renderNav();}
+/* --- Friend system --- */
+
+// Utility: render pending badge (number of incoming invites)
+function updatePendingBadge(){
+  const u=localStorage.getItem('username');
+  if(!u){$('#pendingBadge').style.display='none';return;}
+  const invites=getInvites();
+  const count=invites.filter(iv=>iv.to===u).length;
+  const badge=$('#pendingBadge');
+  if(count>0){badge.style.display='inline-block';badge.textContent= count + ' chờ';}
+  else badge.style.display='none';
+}
+
+// Render friend list (friends stored as array of usernames)
+function renderFriendList(){
+  const area=$('#friendListArea'); area.innerHTML='';
+  const u=localStorage.getItem('username'); if(!u){area.innerHTML='<div style="color:var(--muted)">Đăng nhập để xem bạn bè</div>';return;}
+  const users=getUsers(); const me=users.find(x=>x.username===u);
+  if(!me || !me.friends || me.friends.length===0){ area.innerHTML='<div style="color:var(--muted)">Bạn chưa có bạn bè.</div>'; return; }
+  me.friends.forEach(fname=>{
+    const friend = users.find(x=>x.username===fname);
+    const av = (friend && friend.avatar) ? friend.avatar : DEFAULT_AVATAR;
+    const div=document.createElement('div'); div.className='friend-item';
+    div.innerHTML = `<img src="${av}" alt=""><div style="flex:1"><strong>${fname}</strong><div style="font-size:12px;color:var(--muted)">${friend?friend.email:''}</div></div>
+      <div style="display:flex;gap:6px;align-items:center">
+        <button class="btn-unfriend" data-name="${fname}" style="padding:6px;border-radius:8px;border:1px solid #eee;background:#fff;cursor:pointer">Hủy kết bạn</button>
+      </div>`;
+    area.appendChild(div);
+  });
+  // attach unfriend handlers
+  $$('.btn-unfriend').forEach(b=>b.onclick=()=>{
+    const name=b.getAttribute('data-name'); if(!confirm('Hủy kết bạn với '+name+'?'))return;
+    const usersArr=getUsers();
+    const me2=usersArr.find(x=>x.username===localStorage.getItem('username'));
+    const other=usersArr.find(x=>x.username===name);
+    if(me2){ me2.friends = me2.friends.filter(x=>x!==name); }
+    if(other){ other.friends = other.friends.filter(x=>x!==me2.username); }
+    saveUsers(usersArr); renderFriendList(); renderNav(); alert('Đã hủy kết bạn.');
+  });
+}
+
+// Render search results when user searches for friend
+function renderSearchResults(query){
+  const q = (query||'').trim().toLowerCase();
+  const area=$('#friendListArea'); area.innerHTML='';
+  const u=localStorage.getItem('username'); if(!u){area.innerHTML='<div style="color:var(--muted)">Đăng nhập để tìm bạn</div>';return;}
+  if(!q){ renderFriendList(); return; }
+  const users=getUsers(); const me=users.find(x=>x.username===u);
+  // filter users: match name or id, exclude self and existing friends, show those who haven't been invited yet
+  const invites=getInvites();
+  const results = users.filter(x=> (x.username.toLowerCase().includes(q) || x.id.toLowerCase().includes(q)) && x.username!==u );
+  if(results.length===0){ area.innerHTML='<div style="color:var(--muted)">Không tìm thấy kết quả</div>'; return; }
+  results.forEach(user=>{
+    const alreadyFriend = me && me.friends && me.friends.includes(user.username);
+    const sentInvite = invites.some(iv=>iv.from===u && iv.to===user.username);
+    const receivedInvite = invites.some(iv=>iv.from===user.username && iv.to===u);
+    const av=(user.avatar)?user.avatar:DEFAULT_AVATAR;
+    const row=document.createElement('div'); row.className='invite-row';
+    row.innerHTML = `<div style="display:flex;gap:10px;align-items:center"><img src="${av}" style="width:46px;height:46px;border-radius:50%"><div><strong>${user.username}</strong><div style="font-size:12px;color:var(--muted)">${user.id}</div></div></div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">` +
+      (alreadyFriend? `<div style="color:var(--muted)">Đã là bạn</div>` :
+       receivedInvite? `<div style="color:var(--muted)">Đã nhận lời mời từ họ</div>` :
+       sentInvite? `<div style="color:var(--muted)">Đã gửi lời mời</div>` :
+       `<button class="btn-send-invite" data-name="${user.username}" style="padding:8px 10px;border-radius:8px;border:0;background:var(--accent);color:#fff;cursor:pointer">Gửi lời mời</button>`
+      ) + `</div>`;
+    area.appendChild(row);
+  });
+  $$('.btn-send-invite').forEach(b=>b.onclick=()=>{ sendInvite(b.getAttribute('data-name')); });
+}
+
+// Send invite (creates invite that must be accepted)
+function sendInvite(toUsername){
+  const from=localStorage.getItem('username'); if(!from){alert('Bạn cần đăng nhập để gửi lời mời');return;}
+  if(from===toUsername){alert('Không thể gửi lời mời tới chính bạn');return;}
+  const users=getUsers(); const me=users.find(x=>x.username===from);
+  if(me && me.friends && me.friends.includes(toUsername)){alert('Đã là bạn');return;}
+  const invites=getInvites();
+  if(invites.some(iv=>iv.from===from && iv.to===toUsername)){alert('Bạn đã gửi lời mời trước đó');return;}
+  if(invites.some(iv=>iv.from===toUsername && iv.to===from)){alert('Người kia đã gửi lời mời cho bạn — kiểm tra hộp thư');return;}
+  invites.push({id:'inv'+(Date.now()),from:from,to:toUsername,ts:new Date().toISOString()});
+  saveInvites(invites); alert('Đã gửi lời mời! Người nhận sẽ phải chấp nhận.'); renderAllFriendUI(); updatePendingBadge();
+}
+
+// Render invites area (both incoming and outgoing)
+function renderInvitesArea(){
+  const area=$('#friendInvites'); area.innerHTML=''; area.style.display='block';
+  const u=localStorage.getItem('username'); if(!u){area.innerHTML='<div style="color:var(--muted)">Đăng nhập để xem lời mời</div>';return;}
+  const invites=getInvites(); const users=getUsers();
+
+  const incoming = invites.filter(iv=>iv.to===u);
+  const outgoing = invites.filter(iv=>iv.from===u);
+
+  const incDiv=document.createElement('div'); incDiv.innerHTML='<h4>Lời mời đến bạn</h4>';
+  if(incoming.length===0) incDiv.innerHTML += '<div style="color:var(--muted)">Không có lời mời đến</div>';
+  incoming.forEach(iv=>{
+    const fromUser = users.find(x=>x.username===iv.from) || {};
+    const av=fromUser.avatar||DEFAULT_AVATAR;
+    const row=document.createElement('div'); row.className='invite-row';
+    row.innerHTML=`<div style="display:flex;gap:10px;align-items:center"><img src="${av}" style="width:46px;height:46px;border-radius:50%"><div><strong>${iv.from}</strong><div style="font-size:12px;color:var(--muted)">${fromUser.id||''}</div></div></div>
+      <div style="display:flex;gap:6px;align-items:center">
+        <button class="btn-accept" data-id="${iv.id}" style="padding:8px 10px;border-radius:8px;border:0;background:#10b981;color:#fff;cursor:pointer">Chấp nhận</button>
+        <button class="btn-decline" data-id="${iv.id}" style="padding:8px 10px;border-radius:8px;border:1px solid #eee;background:#fff;cursor:pointer">Từ chối</button>
+      </div>`;
+    incDiv.appendChild(row);
+  });
+
+  const outDiv=document.createElement('div'); outDiv.style.marginTop='12px'; outDiv.innerHTML='<h4>Lời mời bạn đã gửi</h4>';
+  if(outgoing.length===0) outDiv.innerHTML += '<div style="color:var(--muted)">Bạn chưa gửi lời mời nào</div>';
+  outgoing.forEach(iv=>{
+    const toUser = users.find(x=>x.username===iv.to) || {};
+    const av=toUser.avatar||DEFAULT_AVATAR;
+    const row=document.createElement('div'); row.className='invite-row';
+    row.innerHTML=`<div style="display:flex;gap:10px;align-items:center"><img src="${av}" style="width:46px;height:46px;border-radius:50%"><div><strong>${iv.to}</strong><div style="font-size:12px;color:var(--muted)">${toUser.id||''}</div></div></div>
+      <div style="display:flex;gap:6px;align-items:center">
+        <button class="btn-cancel" data-id="${iv.id}" style="padding:8px 10px;border-radius:8px;border:1px solid #eee;background:#fff;cursor:pointer">Hủy</button>
+      </div>`;
+    outDiv.appendChild(row);
+  });
+
+  area.appendChild(incDiv); area.appendChild(outDiv);
+
+  $$('.btn-accept').forEach(b=>b.onclick=()=>acceptInvite(b.getAttribute('data-id')));
+  $$('.btn-decline').forEach(b=>b.onclick=()=>declineInvite(b.getAttribute('data-id')));
+  $$('.btn-cancel').forEach(b=>b.onclick=()=>cancelOutgoingInvite(b.getAttribute('data-id')));
+}
+
+// Accept invite: update both users' friends arrays, remove invite
+function acceptInvite(invId){
+  const invites=getInvites(); const iv=invites.find(x=>x.id===invId); if(!iv) return;
+  const users=getUsers();
+  const me=users.find(x=>x.username===iv.to);
+  const other=users.find(x=>x.username===iv.from);
+  if(me && other){
+    me.friends = Array.from(new Set([...(me.friends||[]), other.username]));
+    other.friends = Array.from(new Set([...(other.friends||[]), me.username]));
+    saveUsers(users);
+  }
+  // remove invite
+  const newInv=invites.filter(x=>x.id!==invId); saveInvites(newInv);
+  renderAllFriendUI(); alert('Đã chấp nhận lời mời.'); updatePendingBadge();
+}
+
+// Decline invite: just remove invite
+function declineInvite(invId){
+  if(!confirm('Từ chối lời mời này?')) return;
+  const invites=getInvites(); const newInv=invites.filter(x=>x.id!==invId); saveInvites(newInv);
+  renderAllFriendUI(); updatePendingBadge();
+}
+
+// Cancel outgoing invite
+function cancelOutgoingInvite(invId){
+  if(!confirm('Hủy lời mời bạn đã gửi?')) return;
+  const invites=getInvites(); const newInv=invites.filter(x=>x.id!==invId); saveInvites(newInv);
+  renderAllFriendUI(); updatePendingBadge();
+}
+
+// Render everything related to friends (list + invites badge)
+function renderAllFriendUI(){
+  renderFriendList(); renderInvitesArea(); updatePendingBadge();
+}
+
+/* Event bindings for friend UI */
+$('#friendSearchBtn').onclick=()=>{ renderSearchResults($('#friendSearchSidebar').value); };
+$('#friendSearchSidebar').addEventListener('keydown', e=>{ if(e.key==='Enter') renderSearchResults($('#friendSearchSidebar').value); });
+
+$('#friendMailBtn').onclick=()=>{
+  const el=$('#friendInvites');
+  el.style.display = (el.style.display==='block') ? 'none' : 'block';
+  if(el.style.display==='block') renderInvitesArea();
+};
+
+// When user opens panel, update friend UI
+userPanel.addEventListener('transitionend', ()=>{ if(userPanel.classList.contains('open')) renderAllFriendUI(); });
+
+/* init */
+function init(){ renderNav(); }
 init();
+
 </script>
 </body>
 </html>
-
-
