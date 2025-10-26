@@ -99,7 +99,6 @@
 </main>
 
 <!-- Bảng thông tin người dùng -->
-<!-- User Panel (off-canvas right) -->
 <div id="userPanel" aria-hidden="true">
   <header>
     <span>Thông tin người dùng</span>
@@ -152,8 +151,6 @@
   </div>
 </div>
 
-
-
 <!-- Modal đăng nhập / đăng ký -->
 <div id="modalLogin" style="display:none">
   <div style="position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center">
@@ -185,8 +182,14 @@
 
 <script>
 const $ = s=>document.querySelector(s);
-function getUsers(){return JSON.parse(localStorage.getItem('users')||'[]');}
-function saveUsers(a){localStorage.setItem('users',JSON.stringify(a));}
+const $$ = sel => document.querySelectorAll(sel);
+  
+function getUsers(){ return JSON.parse(localStorage.getItem('users')||'[]'); }
+function saveUsers(arr){ localStorage.setItem('users', JSON.stringify(arr)); }
+  
+function getInvites(){ return JSON.parse(localStorage.getItem('invites')||'[]'); }
+function saveInvites(arr){ localStorage.setItem('invites', JSON.stringify(arr)); }
+
 const DEFAULT_AVATAR='https://i.imgur.com/6VBx3io.png';
 const navEl=document.getElementById('nav');
 
@@ -267,5 +270,6 @@ init();
 </script>
 </body>
 </html>
+
 
 
