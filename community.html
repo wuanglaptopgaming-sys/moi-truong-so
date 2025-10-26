@@ -79,8 +79,8 @@ header nav a:hover{color:var(--accent);}
 
 <div class="post-box">
   <textarea id="postText" placeholder="Bạn đang nghĩ gì?"></textarea>
-  <label for="postImg">📷 Thêm ảnh</label>
-  <input type="file" id="postImg" accept="image/*">
+ <label for="postImg">📎 Thêm tệp</label>
+<input type="file" id="postImg" multiple accept="image/*,video/*,application/*">
   <button id="postBtn">Đăng bài</button>
 </div>
 
@@ -107,26 +107,30 @@ document.getElementById("postBtn").onclick=()=>{
   const user=getCurrentUser();
   if(!user){alert("Bạn chưa đăng nhập!");return;}
   const text=document.getElementById("postText").value.trim();
-  const file=document.getElementById("postImg").files[0];
-  if(!text && !file)return;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    const posts=getPosts();
-    posts.unshift({
-      user:user.username,
-      avatar:user.avatar||DEFAULT_AVATAR,
-      text,
-      img:e.target.result||"",
-      time:now(),
-      likes:[],
-      comments:[]
-    });
-    savePosts(posts);
-    document.getElementById("postText").value="";
-    document.getElementById("postImg").value="";
-    render();
-  };
-  if(file)reader.readAsDataURL(file); else reader.onload({target:{result:""}});
+const files = Array.from(document.getElementById("postImg").files);
+if(!text && files.length===0) return;
+const posts = getPosts();
+
+const fileData = await Promise.all(files.map(file => new Promise(res=>{
+  const reader = new FileReader();
+  reader.onload = e => res({name:file.name, type:file.type, data:e.target.result});
+  reader.readAsDataURL(file);
+})));
+
+posts.unshift({
+  user: user.username,
+  avatar: user.avatar || DEFAULT_AVATAR,
+  text,
+  files: fileData, // <-- lưu mảng tệp thay vì 1 ảnh
+  time: now(),
+  likes: [],
+  comments: []
+});
+savePosts(posts);
+document.getElementById("postText").value="";
+document.getElementById("postImg").value="";
+render();
+
 };
 
 // ====== Hiển thị bài ======
@@ -145,7 +149,14 @@ function render(){
         <button class="delete-post" onclick="deletePost(${i})">🗑️</button>
       </div>
       <p>${p.text||""}</p>
-      ${p.img?`<img class="post-img" src="${p.img}" onclick="viewImg('${p.img}')">`:""}
+     ${p.files ? p.files.map(f=>{
+  if(f.type.startsWith("image/"))
+    return `<img class='post-img' src='${f.data}' onclick="viewImg('${f.data}')">`;
+  if(f.type.startsWith("video/"))
+    return `<video class='post-img' src='${f.data}' controls></video>`;
+  return `<a href='${f.data}' download='${f.name}'>📎 ${f.name}</a>`;
+}).join("") : ""}
+
       <div class="post-actions">
         <button onclick="toggleLike(${i})">${liked?"💙":"🤍"} ${p.likes?p.likes.length:0}</button>
       </div>
@@ -161,7 +172,14 @@ function render(){
             <div class="comment-content">
               <b>${c.user}</b> <span class="comment-time">${c.time}</span>
               <div>${c.text||""}</div>
-              ${c.img?`<img class="comment-img" src="${c.img}" onclick="viewImg('${c.img}')">`:""}
+             ${c.files ? c.files.map(f=>{
+  if(f.type.startsWith("image/"))
+    return `<img class='comment-img' src='${f.data}' onclick="viewImg('${f.data}')">`;
+  if(f.type.startsWith("video/"))
+    return `<video class='comment-img' src='${f.data}' controls></video>`;
+  return `<a href='${f.data}' download='${f.name}'>📎 ${f.name}</a>`;
+}).join("") : ""}
+
               <button class="like-cmt" onclick="likeComment(${i},${ci})">👍 ${c.likes||0}</button>
               <button class="delete-cmt" onclick="deleteComment(${i},${ci})">✖</button>
             </div>
@@ -193,14 +211,24 @@ function addComment(i){
 function addCommentImg(i,input){
   const user=getCurrentUser();
   if(!user)return alert("Bạn chưa đăng nhập!");
-  const file=input.files[0];
-  const reader=new FileReader();
-  reader.onload=e=>{
-    const posts=getPosts();
-    posts[i].comments.push({user:user.username,avatar:user.avatar||DEFAULT_AVATAR,img:e.target.result,text:"",time:now(),likes:0});
-    savePosts(posts);render();
-  };
+ const files = Array.from(input.files);
+const fileData = await Promise.all(files.map(file => new Promise(res=>{
+  const reader = new FileReader();
+  reader.onload = e => res({name:file.name, type:file.type, data:e.target.result});
   reader.readAsDataURL(file);
+})));
+const posts = getPosts();
+posts[i].comments.push({
+  user: user.username,
+  avatar: user.avatar || DEFAULT_AVATAR,
+  files: fileData,
+  text: "",
+  time: now(),
+  likes: 0
+});
+savePosts(posts);
+render();
+
 }
 function deletePost(i){
   const user=getCurrentUser();const posts=getPosts();
@@ -271,4 +299,5 @@ render();
 
 </body>
 </html>
+
 
