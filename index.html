@@ -195,6 +195,14 @@ function saveInvites(arr){ localStorage.setItem('invites', JSON.stringify(arr));
 const DEFAULT_AVATAR='https://i.imgur.com/6VBx3io.png';
 const navEl=document.getElementById('nav');
 
+/* --- Seed small demo users when none exist (helps testing) --- */
+(function seedIfEmpty(){
+  const u=getUsers();
+  if(u.length===0){
+    u.push({username:'alice',password:'password123',id:'#1001',avatar:'',dob:'1999-01-01',email:'alice@example.com',desc:'Sinh viên lớp 1',friends:[]});
+    u.push({username:'bob',password:'password123',id:'#1002',avatar:'',dob:'2000-02-02',email:'bob@example.com',desc:'Sinh viên lớp 2',friends:[]});
+    saveUsers(u);
+  }
 })();
 
 function resetNav(){
@@ -453,4 +461,3 @@ init();
 </script>
 </body>
 </html>
-
