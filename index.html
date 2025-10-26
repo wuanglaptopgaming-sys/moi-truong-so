@@ -145,8 +145,9 @@ function resetNav(){
     <a href="groups.html">Nhóm học tập</a>
     <button id="btn-signup">Đăng ký</button>
     <button id="btn-login" class="btn-primary">Đăng nhập</button>`;
-  $('#btn-login').onclick=()=>modalLogin.style.display='block';
-  $('#btn-signup').onclick=()=>modalSignup.style.display='block';
+   document.getElementById("btn-login").onclick = () => modalLogin.style.display = 'block';
+  document.getElementById("btn-signup").onclick = () => modalSignup.style.display = 'block';
+
 }
 
 function renderNav(){
@@ -216,3 +217,4 @@ init();
 </script>
 </body>
 </html>
+
